@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!-- 
+// Tinto, a tool for creating colour palettes
+// Author: John Lynch
+// Date: June 2019
+// File: tinto/index.html 
+ -->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Tinto</title>
+    <meta name="description" content="A Javascript app for making colour palettes!">
+    <meta name="author" content="John Lynch">
+    <link href="https://fonts.googleapis.com/css?family=Mali|Rubik" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
+
+<body>
+    <main id="page-grid">
+        <header>
+            <div id="title">Tinto</div> 
+        </header>
+        
+        <section id="cgrid">
+            <!-- Here we'll use Javascript to put a square array of 8x8 squares  -->
+        </section>
+
+        <section id="controls">
+            <button class = "btn" id = "tbtn-red">
+                Red
+            </button>
+            <button class = "btn" id = "tbtn-green">
+                Green
+            </button>
+            <button class = "btn" id = "tbtn-blue">
+                Blue
+            </button>
+            <button class = "btn" id = "tbtn-hue">
+                Hue
+            </button>
+            <button class = "btn" id = "tbtn-saturation">
+                Saturation
+            </button>
+            <button class = "btn" id = "tbtn-lightness">
+                Lightness
+            </button>
+            
+        </section>
+
+        <aside id="side-pane">
+            <h3>This will have the colour palette as hex colours, CSS RGB() colours and CSS vars... </h3>
+        </aside>
+        
+        <footer id="footer">
+            <div class="social-wrapper">
+                <ul class="social-icons">
+                    <li><a target="_blank"
+                        href="https://twitter.com/teraspora" class="social-icon"> <i class="fa fa-twitter"></i></a></li>
+                    <li><a target="_blank"
+                        href="https://github.com/teraspora" class="social-icon"> <i class="fa fa-github"></i></a></li>
+                    <li><a target="_blank"
+                        href="https://www.linkedin.com/in/john-lynch-ballydehob/" class="social-icon"> <i class="fa fa-linkedin"></i></a></li>
+                    <li><a target="_blank"
+                        href="https://www.shadertoy.com/user/teraspora" class="social-icon"> <i class="icon icon-st"><img src="media/shadert.jpg" alt=""></i></a></li>
+                </ul>   
+            </div>
+        </footer>
+
+    </main>
+
+    <script type="text/javascript" src="scripts/index.js"></script>
+
+</body>
+
+</html>
