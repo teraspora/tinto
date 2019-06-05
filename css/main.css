@@ -378,6 +378,7 @@ body, html {
     padding: 0;
     color: var(--bright-col);
     background-color: var(--body-bg-col);
+    font-family: sans-serif;
 }
 
 #page-grid {            
@@ -442,11 +443,36 @@ header {
     height: 80vh;
 }
 
+[id^="tbtn"] {
+    background-color: black;
+    border: 1px solid var(--bright-col);
+    border-radius: 5px;
+}
+
+#tbtn-red {
+    color: red;
+}
+
+#tbtn-green {
+    color: green;
+}
+
+#tbtn-blue {
+    color: blue;
+}
+
+#tbtn-hue, #tbtn-saturation, #tbtn-lightness {
+    color: var(--bright-col);
+}
+
+
+/*============================================================*/
+
 #side-pane {
     grid-column: 3/-1 ;
     grid-row: 2/3;
     height: 80vh;
-    color: black;
+    color: var(--bright-col);
 }
 
 #footer {

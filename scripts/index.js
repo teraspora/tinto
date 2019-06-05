@@ -7,9 +7,13 @@
 let randInt = n => Math.floor(n * Math.random());
 
 const [W, H] = [8, 8];
+const hueFactor = 360 / (W * H);
+const rgbFactor = 255 / W;  // if W != H will need separate factors
 let [hue, sat, lig] = [0, 0, 0];
 let [R, G, B] = [0, 0, 0];
 let [minLightness, maxLightness] = [16, 80]
+let random = true;
+let hueOffset = randInt(360);
 // Temporary colours for the squares so I can distinguish them until I've
 // written the code to colour them properly
 const sq_cols = [`#1ac3ff`, `#c41a77`];
@@ -20,14 +24,31 @@ const grid = document.getElementById("cgrid");
     Create a block of coloured squares, varying two of hue, saturation and lightness
     in the two dimensions while keeping the third constant
 */
-initCells((i, j) => sq_cols[(i + j) % 2])
+initCells((i, j) => `hsl(${((j * W + i) * hueFactor + hueOffset) % 360}, 100%, 48%)`)
 
 document.getElementById("tbtn-hue").addEventListener('click', function() {
     // set hue; for now, a random value
     hue = randInt(360);
-    console.log(`Hue set to ${hue}`);
     cells.forEach(cell => cell.style.backgroundColor =  
         `hsl(${hue}, ${cell.x * 36 / (W - 1) + 64}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
+});
+
+document.getElementById("tbtn-red").addEventListener('click', function() {
+    redValue = randInt(360);
+    cells.forEach(cell => cell.style.backgroundColor =  
+        `rgb(${redValue}, ${rgbFactor * cell.x}, ${rgbFactor * cell.y})`);
+});
+
+document.getElementById("tbtn-green").addEventListener('click', function() {
+    greenValue = randInt(360);
+    cells.forEach(cell => cell.style.backgroundColor =  
+        `rgb(${rgbFactor * cell.x}, ${greenValue}, ${rgbFactor * cell.y})`);
+});
+
+document.getElementById("tbtn-blue").addEventListener('click', function() {
+    blueValue = randInt(360);
+    cells.forEach(cell => cell.style.backgroundColor =  
+        `rgb(${rgbFactor * cell.x}, ${rgbFactor * cell.y}, ${blueValue})`);
 });
 
 let cells = Array.from(grid.children);
