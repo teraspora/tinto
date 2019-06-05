@@ -47,30 +47,7 @@ const grid = document.getElementById("cgrid");
 */
 initCells((i, j) => `hsl(${((j * W + i) * hueFactor + hueOffset) % 360}, 100%, 48%)`)
 
-// document.getElementById("tbtn-hue").addEventListener('click', function() {
-//     // set hue; for now, a random value
-//     hue = randInt(360);
-//     cells.forEach(cell => cell.style.backgroundColor =  
-//         `hsl(${hue}, ${cell.x * 36 / (W - 1) + 64}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
-// });
 
-// document.getElementById("tbtn-red").addEventListener('click', function() {
-//     redValue = randInt(360);
-//     cells.forEach(cell => cell.style.backgroundColor =  
-//         `rgb(${redValue}, ${rgbFactor * cell.x}, ${rgbFactor * cell.y})`);
-// });
-
-// document.getElementById("tbtn-green").addEventListener('click', function() {
-//     greenValue = randInt(360);
-//     cells.forEach(cell => cell.style.backgroundColor =  
-//         `rgb(${rgbFactor * cell.x}, ${greenValue}, ${rgbFactor * cell.y})`);
-// });
-
-// document.getElementById("tbtn-blue").addEventListener('click', function() {
-//     blueValue = randInt(360);
-//     cells.forEach(cell => cell.style.backgroundColor =  
-//         `rgb(${rgbFactor * cell.x}, ${rgbFactor * cell.y}, ${blueValue})`);
-// });
 
 document.getElementById("red-on").addEventListener('change', function() {
     console.log(`Red-on: ${this.checked}`);
@@ -110,6 +87,58 @@ document.getElementById("blue-off").addEventListener('change', function() {
     console.log(`Blue-off: ${this.checked}`);
     fixBlue = false;
 });
+
+// =======================================================================================
+
+document.getElementById("hue-on").addEventListener('change', function() {
+    console.log(`Hue-on: ${this.checked}`);
+    [fixHue, fixSaturation, fixLightness] = [true, false, false];
+    [saturationOffRadio.checked, saturationOnRadio.checked, lightnessOffRadio.checked, lightnessOnRadio.checked]
+        = [true, false, true, false];
+    resetRgbRadios();
+});
+
+document.getElementById("hue-off").addEventListener('change', function() {
+    console.log(`Hue-off: ${this.checked}`);
+    fixHue = false;
+});
+
+document.getElementById("saturation-on").addEventListener('change', function() {
+    console.log(`Saturation-on: ${this.checked}`);
+    [fixHue, fixSaturation, fixLightness] = [false, true, false];
+    [hueOffRadio.checked, hueOnRadio.checked, lightnessOffRadio.checked, lightnessOnRadio.checked]
+        = [true, false, true, false];
+    resetRgbRadios();
+});
+
+document.getElementById("saturation-off").addEventListener('change', function() {
+    console.log(`Saturation-off: ${this.checked}`);
+    fixSaturation = false;
+});
+
+document.getElementById("lightness-on").addEventListener('change', function() {
+    console.log(`Lightness-on: ${this.checked}`);
+    [fixHue, fixSaturation, fixLightness] = [false, false, true];
+    [hueOffRadio.checked, hueOnRadio.checked, saturationOffRadio.checked, saturationOnRadio.checked]
+        = [true, false, true, false];
+    resetRgbRadios();
+});
+
+document.getElementById("lightness-off").addEventListener('change', function() {
+    console.log(`Lightness-off: ${this.checked}`);
+    fixLightness = false;
+});
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -153,6 +182,16 @@ function resetHslRadios() {
     saturationOnRadio.checked = false; 
     lightnessOffRadio.checked = true; 
     lightnessOnRadio.checked = false; 
+}
+
+function resetRgbRadios() {
+    [fixRed, fixGreen, fixBlue] = [false, false, false];
+    redOffRadio.checked = true; 
+    redOnRadio.checked = false; 
+    greenOffRadio.checked = true; 
+    greenOnRadio.checked = false; 
+    blueOffRadio.checked = true; 
+    blueOnRadio.checked = false; 
 }
 
 function generate() {
