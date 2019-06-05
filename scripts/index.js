@@ -39,7 +39,7 @@ let lightnessOnRadio = document.getElementById(`lightness-on`);
 // written the code to colour them properly
 const sq_cols = [`#1ac3ff`, `#c41a77`];
 
-const grid = document.getElementById("cgrid");
+const colourGrid = document.getElementById("colour-grid");
 
 /*
     Create a block of coloured squares, varying two of hue, saturation and lightness
@@ -149,7 +149,7 @@ document.getElementById("generate").addEventListener('click', generate);
 
 
 
-let cells = Array.from(grid.children);
+let cells = Array.from(colourGrid.children);
 cells.forEach(cell => cell.addEventListener('click', showVariants));
 
 
@@ -169,7 +169,7 @@ function initCells(setCellColour) {
             cell.y = j;
             // Set some initial colours for the cells... 
             cell.style.backgroundColor =  setCellColour(i, j);
-            cgrid.appendChild(cell);
+            colourGrid.appendChild(cell);
         }   
     }
 }
@@ -188,7 +188,7 @@ function resetRgbRadios() {
     [fixRed, fixGreen, fixBlue] = [false, false, false];
     redOffRadio.checked = true; 
     redOnRadio.checked = false; 
-    greenOffRadio.checked = true; 
+    greenOffRadio.checked = true;
     greenOnRadio.checked = false; 
     blueOffRadio.checked = true; 
     blueOnRadio.checked = false; 
