@@ -360,7 +360,7 @@ template {
 * {
         box-sizing: border-box;
         --bg-dark-col: #010012;
-        --bright-col: #ff8320;
+        --bright-col: #ffc390;
         --hover-col: #ff4b00;
         --body-bg-col: #040408;
         --btn-col-A: #14508d;
@@ -443,15 +443,26 @@ header {
     height: 80vh;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: auto;
-    grid-gap: 10px;
+    grid-template-rows: repeat(6, 8fr) 52fr;
+    grid-row-gap: : 10px;
+    grid-column-gap: 10px;
+    align-items: center;
+    padding: 8px;
+}
+#controls > * {
+    border: 1px solid var(--bright-col);
+    border-radius: 5px;
+    font-size: 1.2vw;
+}
+
+#settings {
+    grid-column: 1/-1;
+    overflow-y: scroll;
 }
 
 [id^="tbtn"] {
     background-color: black;
     border: 1px solid var(--bright-col);
-    border-radius: 5px;
-    font-size: 0.5vw;
 }
 
 #tbtn-red {
