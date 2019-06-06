@@ -187,7 +187,7 @@ function generate() {
         hue = randInt(360);
         status.innerText = `Hue: ${hue}`;
         cells.forEach(cell => cell.style.backgroundColor =  
-            `hsl(${hue}, ${cell.x * 36 / (W - 1) + 64}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
+            `hsl(${hue}, ${cell.x * 100 / W}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
     }
     else if (fixSaturation) {
         saturation = randInt(101);
@@ -199,6 +199,6 @@ function generate() {
         lightness = randInt(101);
         status.innerText = `Lightness: ${lightness}`;
         cells.forEach(cell => cell.style.backgroundColor =  
-            `hsl(${cell.x * 360 / W}, ${cell.y * 36 / (H - 1) + 64}%, ${lightness}%)`);
+            `hsl(${cell.x * 360 / W}, ${(H - cell.y) * 100 / W}%, ${lightness}%)`);
     }
 }
