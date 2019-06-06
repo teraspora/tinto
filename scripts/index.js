@@ -9,155 +9,125 @@ let randInt = n => Math.floor(n * Math.random());
 const [W, H] = [8, 8];
 const hueFactor = 360 / (W * H);
 const rgbFactor = 255 / W;  // if W != H will need separate factors
-let [hue, saturation, lightness] = [0, 0, 0];
-let [R, G, B] = [0, 0, 0];
-let [minLightness, maxLightness] = [16, 80]
-let random = true;
-let hueOffset = randInt(360);
+const [minLightness, maxLightness] = [16, 80]
 
+let [hue, saturation, lightness] = [0, 0, 0];
+let [redValue, greenValue, blueValue] = [0, 0, 0];
+
+let random = true;
+// Start somewhere different on the hue circle each time
+let hueOffset = randInt(360);   
 let [fixRed, fixGreen, fixBlue] = [false, false, false];
 let [fixHue, fixSaturation, fixLightness] = [false, false, false];
 
 // Get refs to all radio buttons
-let redOffRadio = document.getElementById(`red-off`);
-let redOnRadio = document.getElementById(`red-on`);
-let greenOffRadio = document.getElementById(`green-off`);
-let greenOnRadio = document.getElementById(`green-on`);
-let blueOffRadio = document.getElementById(`blue-off`);
-let blueOnRadio = document.getElementById(`blue-on`);
+const redOffRadio = document.getElementById(`red-off`);
+const redOnRadio = document.getElementById(`red-on`);
+const greenOffRadio = document.getElementById(`green-off`);
+const greenOnRadio = document.getElementById(`green-on`);
+const blueOffRadio = document.getElementById(`blue-off`);
+const blueOnRadio = document.getElementById(`blue-on`);
 
-let hueOffRadio = document.getElementById(`hue-off`);
-let hueOnRadio = document.getElementById(`hue-on`);
-let saturationOffRadio = document.getElementById(`saturation-off`);
-let saturationOnRadio = document.getElementById(`saturation-on`);
-let lightnessOffRadio = document.getElementById(`lightness-off`);
-let lightnessOnRadio = document.getElementById(`lightness-on`);
-
-
-
-// Temporary colours for the squares so I can distinguish them until I've
-// written the code to colour them properly
-const sq_cols = [`#1ac3ff`, `#c41a77`];
-
+const hueOffRadio = document.getElementById(`hue-off`);
+const hueOnRadio = document.getElementById(`hue-on`);
+const saturationOffRadio = document.getElementById(`saturation-off`);
+const saturationOnRadio = document.getElementById(`saturation-on`);
+const lightnessOffRadio = document.getElementById(`lightness-off`);
+const lightnessOnRadio = document.getElementById(`lightness-on`);
+// and the grid of coloured squares
 const colourGrid = document.getElementById("colour-grid");
-
+// and the status indicator
+const status = document.getElementById("status");
 /*
-    Create a block of coloured squares, varying two of hue, saturation and lightness
-    in the two dimensions while keeping the third constant
+    Create a block of coloured squares
 */
 initCells((i, j) => `hsl(${((j * W + i) * hueFactor + hueOffset) % 360}, 100%, 48%)`)
 
+let cells = Array.from(colourGrid.children);
+cells.forEach(cell => cell.addEventListener('click', showVariants));
 
-
-document.getElementById("red-on").addEventListener('change', function() {
-    console.log(`Red-on: ${this.checked}`);
+// Event listeners for the 'VARY/FIX' radio buttons
+redOnRadio.addEventListener('change', function() {
     [fixRed, fixGreen, fixBlue] = [true, false, false];
     [greenOffRadio.checked, greenOnRadio.checked, blueOffRadio.checked, blueOnRadio.checked]
         = [true, false, true, false];
     resetHslRadios();
 });
 
-document.getElementById("red-off").addEventListener('change', function() {
-    console.log(`Red-off: ${this.checked}`);
+redOffRadio.addEventListener('change', function() {
     fixRed = false;
 });
 
-document.getElementById("green-on").addEventListener('change', function() {
-    console.log(`Green-on: ${this.checked}`);
+greenOnRadio.addEventListener('change', function() {
     [fixRed, fixGreen, fixBlue] = [false, true, false];
     [redOffRadio.checked, redOnRadio.checked, blueOffRadio.checked, blueOnRadio.checked]
         = [true, false, true, false];
     resetHslRadios();
 });
 
-document.getElementById("green-off").addEventListener('change', function() {
-    console.log(`Green-off: ${this.checked}`);
+greenOffRadio.addEventListener('change', function() {
     fixGreen = false;
 });
 
-document.getElementById("blue-on").addEventListener('change', function() {
-    console.log(`Blue-on: ${this.checked}`);
+blueOnRadio.addEventListener('change', function() {
     [fixRed, fixGreen, fixBlue] = [false, false, true];
     [redOffRadio.checked, redOnRadio.checked, greenOffRadio.checked, greenOnRadio.checked]
         = [true, false, true, false];
     resetHslRadios();
 });
 
-document.getElementById("blue-off").addEventListener('change', function() {
-    console.log(`Blue-off: ${this.checked}`);
+blueOffRadio.addEventListener('change', function() {
     fixBlue = false;
 });
 
 // =======================================================================================
 
-document.getElementById("hue-on").addEventListener('change', function() {
-    console.log(`Hue-on: ${this.checked}`);
+hueOnRadio.addEventListener('change', function() {
     [fixHue, fixSaturation, fixLightness] = [true, false, false];
     [saturationOffRadio.checked, saturationOnRadio.checked, lightnessOffRadio.checked, lightnessOnRadio.checked]
         = [true, false, true, false];
     resetRgbRadios();
 });
 
-document.getElementById("hue-off").addEventListener('change', function() {
-    console.log(`Hue-off: ${this.checked}`);
+hueOffRadio.addEventListener('change', function() {
     fixHue = false;
 });
 
-document.getElementById("saturation-on").addEventListener('change', function() {
-    console.log(`Saturation-on: ${this.checked}`);
+saturationOnRadio.addEventListener('change', function() {
     [fixHue, fixSaturation, fixLightness] = [false, true, false];
     [hueOffRadio.checked, hueOnRadio.checked, lightnessOffRadio.checked, lightnessOnRadio.checked]
         = [true, false, true, false];
     resetRgbRadios();
 });
 
-document.getElementById("saturation-off").addEventListener('change', function() {
-    console.log(`Saturation-off: ${this.checked}`);
+saturationOffRadio.addEventListener('change', function() {
     fixSaturation = false;
 });
 
-document.getElementById("lightness-on").addEventListener('change', function() {
-    console.log(`Lightness-on: ${this.checked}`);
+lightnessOnRadio.addEventListener('change', function() {
     [fixHue, fixSaturation, fixLightness] = [false, false, true];
     [hueOffRadio.checked, hueOnRadio.checked, saturationOffRadio.checked, saturationOnRadio.checked]
         = [true, false, true, false];
     resetRgbRadios();
 });
 
-document.getElementById("lightness-off").addEventListener('change', function() {
-    console.log(`Lightness-off: ${this.checked}`);
+lightnessOffRadio.addEventListener('change', function() {
     fixLightness = false;
 });
+// =================================================================================================
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Listener for 'Generate' button
 document.getElementById("generate").addEventListener('click', generate);
 
-
-
-
-let cells = Array.from(colourGrid.children);
-cells.forEach(cell => cell.addEventListener('click', showVariants));
-
+// =================================================================================================
 
 function showVariants() {
-    // show a block of 16 variants of the clicked colour
+    // will show a block of 16 variants of the clicked colour
     // clicking one of these adds it to the palette,
     // gracefully, fades the block and goes back to the previous view;
     console.log(`cell (${this.x}, ${this.y}) clicked -\n    Show a block of 16 variants of the clicked colour`);
+    // temporarily, just turn the cell black
+    // so I can see something's happened
     this.style.backgroundColor = `#000000`;
 }
 
@@ -195,36 +165,40 @@ function resetRgbRadios() {
 }
 
 function generate() {
-    console.log("Generate button clicked!");
     if (fixRed) {
         redValue = randInt(256);
+        status.innerText = `Red: ${redValue}`
         cells.forEach(cell => cell.style.backgroundColor =  
             `rgb(${redValue}, ${rgbFactor * cell.x}, ${rgbFactor * cell.y})`);
     }
     else if (fixGreen) {
         greenValue = randInt(256);
+        status.innerText = `Green: ${greenValue}`
         cells.forEach(cell => cell.style.backgroundColor =  
             `rgb(${rgbFactor * cell.x}, ${greenValue}, ${rgbFactor * cell.y})`);
     }
     else if (fixBlue) {
         blueValue = randInt(256);
+        status.innerText = `Blue: ${blueValue}`
         cells.forEach(cell => cell.style.backgroundColor =  
             `rgb(${rgbFactor * cell.x}, ${rgbFactor * cell.y}, ${blueValue})`);       
     }
     else if (fixHue) {
         hue = randInt(360);
+        status.innerText = `Hue: ${hue}`;
         cells.forEach(cell => cell.style.backgroundColor =  
             `hsl(${hue}, ${cell.x * 36 / (W - 1) + 64}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
     }
     else if (fixSaturation) {
         saturation = randInt(101);
+        status.innerText = `Saturation: ${saturation}`;
         cells.forEach(cell => cell.style.backgroundColor =  
             `hsl(${cell.x * 360 / W}, ${saturation}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
     }
     else if (fixLightness) {
         lightness = randInt(101);
+        status.innerText = `Lightness: ${lightness}`;
         cells.forEach(cell => cell.style.backgroundColor =  
-            `hsl(${cell.x * 360 / W}, ${cell.x * 36 / (W - 1) + 64}%, ${lightness}%)`);
+            `hsl(${cell.x * 360 / W}, ${cell.y * 36 / (H - 1) + 64}%, ${lightness}%)`);
     }
-
 }

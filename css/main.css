@@ -491,6 +491,23 @@ header {
 #settings {
     grid-column: 1/-1;
     overflow-y: scroll;
+    text-align: center;
+    padding-top: 2vh;
+}
+
+#generate {
+    align-self: center;
+    color: var(--bright-text-col);
+    background-color: var(--bg-dark-col);
+    border: 1px solid red;
+    border-radius: 6px;
+}
+
+#status {
+    border-top: 1px solid var(--tblue);
+    border-bottom: 1px solid var(--tblue);
+    color: var(--bright-text-col);
+    background-color: var(--bg-dark-col); 
 }
 
 [id^="tbtn"] {
