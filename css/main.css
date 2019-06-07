@@ -394,7 +394,7 @@ body, html {
 
 /* =================================================================== */
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 1024px) and (orientation: portrait) {
     #page-grid {
         grid-template-columns: 90vw;
         grid-template-rows: 1fr 7fr 7fr 1fr;
