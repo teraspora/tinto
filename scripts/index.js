@@ -11,9 +11,9 @@ const hueFactor = 360 / (W * H);
 const rgbFactor = 255 / W;  // if W != H will need separate factors
 const [minLightness, maxLightness] = [16, 80]
 
-let [hue, saturation, lightness] = [0, 0, 0];
-let [redValue, greenValue, blueValue] = [0, 0, 0];
-
+// Values set randomly or by user for R, G, B, H, S, L respectively
+let values = [0, 0, 0, 0, 0, 0];
+let names = [`Red`, `Green`, `Blue`, `Hue`, `Saturation`, `Lightness`];
 let random = true;
 // Start somewhere different on the hue circle each time
 let hueOffset = randInt(360);   
@@ -34,10 +34,41 @@ const saturationOffRadio = document.getElementById(`saturation-off`);
 const saturationOnRadio = document.getElementById(`saturation-on`);
 const lightnessOffRadio = document.getElementById(`lightness-off`);
 const lightnessOnRadio = document.getElementById(`lightness-on`);
+
+const sliderWrappers = document.getElementsByClassName(`wrapper`);
+
+// -1: none active; 0: red active; 1: green active ... blue 2, hue 3, sat 4, lig 5
+let activeSlider = -1
 // and the grid of coloured squares
 const colourGrid = document.getElementById("colour-grid");
 // and the status indicator
 const status = document.getElementById("status");
+
+// Range slider code, adapted from A PEN BY Marine Piette
+// at https://codepen.io/mayuMPH/pen/ZjxGEY
+const rangeSliders = [];
+const rangeBullets = [];
+for (let i = 0; i < 6; i++) {
+    rangeSliders[i] = document.getElementById("rs-range-line-" + i);
+    rangeSliders[i].addEventListener("input", showSliderValue, false);
+    rangeBullets[i] = document.getElementById("rs-bullet-" + i);
+}
+
+function showSliderValue() {
+  setSliderOpacity(1);
+  activeSlider = Number(this.id.substr(-1));
+  let slider = rangeSliders[activeSlider];
+  let bullet = rangeBullets[activeSlider];
+  values[activeSlider] = slider.value;
+  bullet.innerHTML = values[activeSlider];
+  let bulletPosition = (values[activeSlider] / slider.max);
+  bullet.style.left = (bulletPosition * slider.clientWidth) + "px";
+  setStatus(`${names[activeSlider]}: ${values[activeSlider]}`);
+  resetRgbRadios();
+  resetHslRadios();
+}
+// ==========================================================================
+
 /*
     Create a block of coloured squares
 */
@@ -52,10 +83,14 @@ redOnRadio.addEventListener('change', function() {
     [greenOffRadio.checked, greenOnRadio.checked, blueOffRadio.checked, blueOnRadio.checked]
         = [true, false, true, false];
     resetHslRadios();
+    activeSlider = -1;
+    setSliderOpacity(0.5);
 });
 
 redOffRadio.addEventListener('change', function() {
     fixRed = false;
+    activeSlider = -1;
+    setSliderOpacity(0.5);
 });
 
 greenOnRadio.addEventListener('change', function() {
@@ -63,10 +98,14 @@ greenOnRadio.addEventListener('change', function() {
     [redOffRadio.checked, redOnRadio.checked, blueOffRadio.checked, blueOnRadio.checked]
         = [true, false, true, false];
     resetHslRadios();
+    activeSlider = -1;
+    setSliderOpacity(0.5);
 });
 
 greenOffRadio.addEventListener('change', function() {
     fixGreen = false;
+    activeSlider = -1;
+    setSliderOpacity(0.5);
 });
 
 blueOnRadio.addEventListener('change', function() {
@@ -74,10 +113,14 @@ blueOnRadio.addEventListener('change', function() {
     [redOffRadio.checked, redOnRadio.checked, greenOffRadio.checked, greenOnRadio.checked]
         = [true, false, true, false];
     resetHslRadios();
+    activeSlider = -1;
+    setSliderOpacity(0.5);
 });
 
 blueOffRadio.addEventListener('change', function() {
     fixBlue = false;
+    activeSlider = -1;
+    setSliderOpacity(0.5);
 });
 
 // =======================================================================================
@@ -87,10 +130,14 @@ hueOnRadio.addEventListener('change', function() {
     [saturationOffRadio.checked, saturationOnRadio.checked, lightnessOffRadio.checked, lightnessOnRadio.checked]
         = [true, false, true, false];
     resetRgbRadios();
+    activeSlider = -1;
+    setSliderOpacity(0.5);
 });
 
 hueOffRadio.addEventListener('change', function() {
     fixHue = false;
+    activeSlider = -1;
+    setSliderOpacity(0.5);
 });
 
 saturationOnRadio.addEventListener('change', function() {
@@ -98,10 +145,14 @@ saturationOnRadio.addEventListener('change', function() {
     [hueOffRadio.checked, hueOnRadio.checked, lightnessOffRadio.checked, lightnessOnRadio.checked]
         = [true, false, true, false];
     resetRgbRadios();
+    activeSlider = -1;
+    setSliderOpacity(0.5);
 });
 
 saturationOffRadio.addEventListener('change', function() {
     fixSaturation = false;
+    activeSlider = -1;
+    setSliderOpacity(0.5);
 });
 
 lightnessOnRadio.addEventListener('change', function() {
@@ -109,10 +160,14 @@ lightnessOnRadio.addEventListener('change', function() {
     [hueOffRadio.checked, hueOnRadio.checked, saturationOffRadio.checked, saturationOnRadio.checked]
         = [true, false, true, false];
     resetRgbRadios();
+    activeSlider = -1;
+    setSliderOpacity(0.5);
 });
 
 lightnessOffRadio.addEventListener('change', function() {
     fixLightness = false;
+    activeSlider = -1;
+    setSliderOpacity(0.5);
 });
 // =================================================================================================
 
@@ -164,41 +219,82 @@ function resetRgbRadios() {
     blueOnRadio.checked = false; 
 }
 
+function setSliderOpacity(opacity) {
+    for (let w of sliderWrappers) {
+    w.style.opacity = opacity;
+}
+}
+
 function generate() {
-    if (fixRed) {
-        redValue = randInt(256);
-        status.innerText = `Red: ${redValue}`
-        cells.forEach(cell => cell.style.backgroundColor =  
-            `rgb(${redValue}, ${rgbFactor * cell.x}, ${rgbFactor * cell.y})`);
+    if (activeSlider < 0) {
+        if (fixRed) {
+            values[0] = randInt(256);
+            setStatus(`Red: ${values[0]}`);
+            cells.forEach(cell => cell.style.backgroundColor =  
+                `rgb(${values[0]}, ${rgbFactor * cell.x}, ${rgbFactor * cell.y})`);
+        }
+        else if (fixGreen) {
+            values[1] = randInt(256);
+            setStatus(`Green: ${values[1]}`);
+            cells.forEach(cell => cell.style.backgroundColor =  
+                `rgb(${rgbFactor * cell.x}, ${values[1]}, ${rgbFactor * cell.y})`);
+        }
+        else if (fixBlue) {
+            values[2] = randInt(256);
+            setStatus(`Blue: ${values[2]}`);
+            cells.forEach(cell => cell.style.backgroundColor =  
+                `rgb(${rgbFactor * cell.x}, ${rgbFactor * cell.y}, ${values[2]})`);       
+        }
+        else if (fixHue) {
+            values[3] = randInt(360);
+            setStatus(`Hue: ${values[3]}`);
+            cells.forEach(cell => cell.style.backgroundColor =  
+                `hsl(${values[3]}, ${cell.x * 100 / W}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
+        }
+        else if (fixSaturation) {
+            values[4] = randInt(101);
+            setStatus(`Saturation: ${values[4]}`);
+            cells.forEach(cell => cell.style.backgroundColor =  
+                `hsl(${cell.x * 360 / W}, ${values[4]}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
+        }
+        else if (fixLightness) {
+            values[5] = randInt(101);
+            setStatus(`Lightness: ${values[5]}`);
+            cells.forEach(cell => cell.style.backgroundColor =  
+                `hsl(${cell.x * 360 / W}, ${(H - cell.y) * 100 / W}%, ${values[5]}%)`);
+        }
     }
-    else if (fixGreen) {
-        greenValue = randInt(256);
-        status.innerText = `Green: ${greenValue}`
-        cells.forEach(cell => cell.style.backgroundColor =  
-            `rgb(${rgbFactor * cell.x}, ${greenValue}, ${rgbFactor * cell.y})`);
+    else {
+        setStatus(`${names[activeSlider]}: ${values[activeSlider]}`);
+        switch (activeSlider) {
+            case 0: 
+                cells.forEach(cell => cell.style.backgroundColor =  
+                `rgb(${values[0]}, ${rgbFactor * cell.x}, ${rgbFactor * cell.y})`);
+                break;
+            case 1: 
+                cells.forEach(cell => cell.style.backgroundColor =  
+                `rgb(${rgbFactor * cell.x}, ${values[1]}, ${rgbFactor * cell.y})`);
+                break;          
+            case 2: 
+                cells.forEach(cell => cell.style.backgroundColor =  
+                `rgb(${rgbFactor * cell.x}, ${rgbFactor * cell.y}, ${values[2]})`);
+                break;          
+            case 3: 
+                cells.forEach(cell => cell.style.backgroundColor =  
+                `hsl(${values[3]}, ${cell.x * 100 / W}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
+                break;          
+            case 4: 
+                cells.forEach(cell => cell.style.backgroundColor =  
+                `hsl(${cell.x * 360 / W}, ${values[4]}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
+                break;          
+            case 5: 
+                cells.forEach(cell => cell.style.backgroundColor =  
+                `hsl(${cell.x * 360 / W}, ${(H - cell.y) * 100 / W}%, ${values[5]}%)`);
+                break;
+        }            
     }
-    else if (fixBlue) {
-        blueValue = randInt(256);
-        status.innerText = `Blue: ${blueValue}`
-        cells.forEach(cell => cell.style.backgroundColor =  
-            `rgb(${rgbFactor * cell.x}, ${rgbFactor * cell.y}, ${blueValue})`);       
-    }
-    else if (fixHue) {
-        hue = randInt(360);
-        status.innerText = `Hue: ${hue}`;
-        cells.forEach(cell => cell.style.backgroundColor =  
-            `hsl(${hue}, ${cell.x * 100 / W}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
-    }
-    else if (fixSaturation) {
-        saturation = randInt(101);
-        status.innerText = `Saturation: ${saturation}`;
-        cells.forEach(cell => cell.style.backgroundColor =  
-            `hsl(${cell.x * 360 / W}, ${saturation}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
-    }
-    else if (fixLightness) {
-        lightness = randInt(101);
-        status.innerText = `Lightness: ${lightness}`;
-        cells.forEach(cell => cell.style.backgroundColor =  
-            `hsl(${cell.x * 360 / W}, ${(H - cell.y) * 100 / W}%, ${lightness}%)`);
-    }
+}
+
+function setStatus(text) {
+    status.innerText = text;
 }
