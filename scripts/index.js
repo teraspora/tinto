@@ -118,14 +118,14 @@ greenOnRadio.addEventListener('change', function() {
     [redOffRadio.checked, redOnRadio.checked, blueOffRadio.checked, blueOnRadio.checked]
         = [true, false, true, false];
     resetHslRadios();
-    activeSlider = -1;
+    activeSlider = -2;
     setRadioOpacity(1);
     setSliderOpacity(0.5);
 });
 
 greenOffRadio.addEventListener('change', function() {
     fixGreen = false;
-    activeSlider = -1;
+    activeSlider = -2;
     setRadioOpacity(1);
     setSliderOpacity(0.5);
 });
@@ -136,14 +136,14 @@ blueOnRadio.addEventListener('change', function() {
         = [true, false, true, false];
     resetHslRadios();
     setRadioOpacity(1);
-    activeSlider = -1;
+    activeSlider = -3;
     setSliderOpacity(0.5);
 });
 
 blueOffRadio.addEventListener('change', function() {
     fixBlue = false;
     setRadioOpacity(1);
-    activeSlider = -1;
+    activeSlider = -3;
     setSliderOpacity(0.5);
 });
 
@@ -155,13 +155,13 @@ hueOnRadio.addEventListener('change', function() {
         = [true, false, true, false];
     resetRgbRadios();
     setRadioOpacity(1);
-    activeSlider = -1;
+    activeSlider = -4;
     setSliderOpacity(0.5);
 });
 
 hueOffRadio.addEventListener('change', function() {
     fixHue = false;
-    activeSlider = -1;
+    activeSlider = -4;
     setRadioOpacity(1);
     setSliderOpacity(0.5);
 });
@@ -171,14 +171,14 @@ saturationOnRadio.addEventListener('change', function() {
     [hueOffRadio.checked, hueOnRadio.checked, lightnessOffRadio.checked, lightnessOnRadio.checked]
         = [true, false, true, false];
     resetRgbRadios();
-    activeSlider = -1;
+    activeSlider = -5;
     setRadioOpacity(1);
     setSliderOpacity(0.5);
 });
 
 saturationOffRadio.addEventListener('change', function() {
     fixSaturation = false;
-    activeSlider = -1;
+    activeSlider = -5;
     setRadioOpacity(1);
     setSliderOpacity(0.5);
 });
@@ -188,14 +188,14 @@ lightnessOnRadio.addEventListener('change', function() {
     [hueOffRadio.checked, hueOnRadio.checked, saturationOffRadio.checked, saturationOnRadio.checked]
         = [true, false, true, false];
     resetRgbRadios();
-    activeSlider = -1;
+    activeSlider = -6;
     setRadioOpacity(1);
     setSliderOpacity(0.5);
 });
 
 lightnessOffRadio.addEventListener('change', function() {
     fixLightness = false;
-    activeSlider = -1;
+    activeSlider = -6;
     setRadioOpacity(1);
     setSliderOpacity(0.5);
 });
@@ -255,14 +255,31 @@ function setSliderOpacity(opacity) {
     }
 }
 
+function dimOtherSliders() {
+    for (let i = 0; i < 6; i++) {
+        if (i != activeSlider) {
+            sliderWrappers[i].style.opacity = 0.3;
+        }
+    }
+}
+
 function setRadioOpacity(opacity) {
     for (let s of switches) {
         s.style.opacity = opacity;
     }
 }
 
+function dimOtherSwitches() {
+    for (let i = 0; i < 6; i++) {
+        if (i + 1 != -activeSlider) {
+            switches[i].style.opacity = 0.3;
+        }
+    }
+}
+
 function generate() {
     if (activeSlider < 0) {
+        dimOtherSwitches();
         if (fixRed) {
             values[0] = randInt(256);
             setStatus(`Red: ${values[0]}`);
@@ -302,6 +319,7 @@ function generate() {
     }
     else {
         setStatus(`${names[activeSlider]}: ${values[activeSlider]}`);
+        dimOtherSliders();
         switch (activeSlider) {
             case 0: 
                 cells.forEach(cell => cell.style.backgroundColor =  
