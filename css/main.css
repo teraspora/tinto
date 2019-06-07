@@ -636,6 +636,7 @@ ul.social-icons {
   border-radius: 3px;
   -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+  transition: opacity .3s ease-in-out;
 }
 
 .switch-label {
@@ -738,6 +739,7 @@ ul.social-icons {
   background: linear-gradient(180deg, #DB302A 0%, #62186B 100%) no-repeat;
   margin-top: 0px;
   margin-left: 20px;
+  transition: opacity .3s ease-in-out;
 }
 
 .box-minmax {
