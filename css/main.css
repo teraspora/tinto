@@ -511,7 +511,8 @@ header {
     border-top: 1px solid var(--tblue);
     border-bottom: 1px solid var(--tblue);
     color: var(--bright-text-col);
-    background-color: var(--bg-dark-col); 
+    background-color: var(--bg-dark-col);
+    user-select: text; 
 }
 
 [id^="tbtn"] {
