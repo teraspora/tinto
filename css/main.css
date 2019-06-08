@@ -735,7 +735,7 @@ ul.social-icons {
   width: 180px;
   height: 10px;
   padding-top: 25px;
-  border-radius: 8px;
+  border-radius: 6px;
   padding-bottom: 0px;
   background: linear-gradient(180deg, #DB302A 0%, #62186B 100%) no-repeat;
   margin-top: 0px;
@@ -757,7 +757,7 @@ ul.social-icons {
 
 .range-slider {
   margin-top: -8%;
-  border-radius: 8px;
+  border-radius: 6px;
 
 }
 
@@ -870,6 +870,7 @@ ul.social-icons {
   text-align: center;
   font-size: 1.6vw;
   border: 3px ridge var(--tblue);
+  border-radius: 5px;
   background-color: black;
   color: var(--bright-text-col);
   display: none;
