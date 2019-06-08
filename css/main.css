@@ -858,6 +858,7 @@ ul.social-icons {
 
 .cell {
   text-align: center;
+  cursor: pointer;
 }
 
 #modal {
