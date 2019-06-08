@@ -843,3 +843,18 @@ ul.social-icons {
   margin-top: -1px;
 }
 
+.hexColour {
+  opacity: 0;
+  font-size: 1.3rem;
+  font-weight: bold;
+  transition: opacity 0.5s ease-in;
+
+}
+
+.hexColour:hover {
+  opacity: 1;
+}
+
+.cell {
+  text-align: center;
+}

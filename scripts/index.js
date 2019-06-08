@@ -93,7 +93,14 @@ function unHighlightSlider(currentSlider) {
 initCells((i, j) => `hsl(${((j * W + i) * hueFactor + hueOffset) % 360}, 100%, 48%)`)
 
 let cells = Array.from(colourGrid.children);
-cells.forEach(cell => cell.addEventListener('click', showVariants));
+cells.forEach(cell => {
+    cell.addEventListener('click', showVariants);
+    cell.classList.add('cell');
+    let span = document.createElement(`SPAN`);
+    span.style.lineHeight = window.getComputedStyle(cell).height;
+    span.classList.add(`hexColour`)
+    cell.appendChild(span);
+});
 
 // Event listeners for the 'VARY/FIX' radio buttons
 redOnRadio.addEventListener('change', function() {
@@ -347,8 +354,20 @@ function generate() {
                 break;
         }            
     }
+    cells.forEach(cell => {
+        cell.style.color = `#000000`;
+        cell.firstChild.innerText = rgb2Hex(cell.style.backgroundColor);
+    });
 }
 
 function setStatus(text) {
     status.innerText = text;
+}
+
+function rgb2Hex(colour) {
+    let rgb = colour.slice(4,-1).split(`,`);
+    return `#`
+      + (`0` + Number(rgb[0]).toString(16)).slice(-2)
+      + (`0` + Number(rgb[1]).toString(16)).slice(-2)
+      + (`0` + Number(rgb[2]).toString(16)).slice(-2);
 }
