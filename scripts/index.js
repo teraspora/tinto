@@ -16,6 +16,7 @@ let values = [0, 0, 0, 0, 0, 0];
 let names = [`Red`, `Green`, `Blue`, `Hue`, `Saturation`, `Lightness`];
 let random = true;
 let showHex = false;
+let liveChanges = true;
 // Start somewhere different on the hue circle each time
 let hueOffset = randInt(360);   
 let [fixRed, fixGreen, fixBlue] = [false, false, false];
@@ -73,6 +74,7 @@ function showSliderValue() {
   setStatus(`${names[activeSlider]}: ${values[activeSlider]}`);
   resetRgbRadios();
   resetHslRadios();
+  if (liveChanges) generate();
 }
 
 function highlightSlider(currentSlider) {
