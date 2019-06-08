@@ -8,7 +8,7 @@ let randInt = n => Math.floor(n * Math.random());
 
 const [W, H] = [8, 8];
 const hueFactor = 360 / (W * H);
-const rgbFactor = 255 / W;  // if W != H will need separate factors
+const rgbFactor = 255 / (W - 1);  // if W != H will need separate factors
 const [minLightness, maxLightness] = [16, 80]
 
 // Values set randomly or by user for R, G, B, H, S, L respectively
