@@ -15,6 +15,7 @@ const [minLightness, maxLightness] = [16, 80]
 let values = [0, 0, 0, 0, 0, 0];
 let names = [`Red`, `Green`, `Blue`, `Hue`, `Saturation`, `Lightness`];
 let random = true;
+let showHex = false;
 // Start somewhere different on the hue circle each time
 let hueOffset = randInt(360);   
 let [fixRed, fixGreen, fixBlue] = [false, false, false];
@@ -211,6 +212,13 @@ lightnessOffRadio.addEventListener('change', function() {
 // Listener for 'Generate' button
 document.getElementById("generate").addEventListener('click', generate);
 
+// Listener for 'Show Hex' button
+document.getElementById("show-hex").addEventListener('click', function() {
+    showHex = !showHex;
+    this.innerText = showHex ? "HIDE HEX" : "SHOW HEX";
+    generate();
+});
+
 // =================================================================================================
 
 function showVariants() {
@@ -355,10 +363,11 @@ function generate() {
         }            
     }
     cells.forEach(cell => {
-        cell.style.color = `#000000`;
-        cell.firstChild.innerText = rgb2Hex(cell.style.backgroundColor);
+        let span = cell.firstChild;
+        span.innerText = rgb2Hex(cell.style.backgroundColor);
+        span.style.opacity = showHex ? 1 : 0;
     });
-}
+}   // END generate()
 
 function setStatus(text) {
     status.innerText = text;

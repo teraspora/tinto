@@ -499,7 +499,7 @@ header {
     padding-top: 2vh;
 }
 
-#generate {
+#generate, #show-hex {
     align-self: center;
     color: var(--bright-text-col);
     background-color: var(--bg-dark-col);
@@ -845,6 +845,7 @@ ul.social-icons {
 
 .hexColour {
   opacity: 0;
+  color: #000000;
   font-size: 1.3rem;
   font-weight: bold;
   transition: opacity 0.5s ease-in;
