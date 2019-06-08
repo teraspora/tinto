@@ -859,3 +859,17 @@ ul.social-icons {
 .cell {
   text-align: center;
 }
+
+#modal {
+  position: absolute;
+  width: 25vw;
+  height: 25vh;
+  top: 25%;
+  left: 25%;
+  text-align: center;
+  font-size: 1.6vw;
+  border: 3px ridge var(--tblue);
+  background-color: black;
+  color: var(--bright-text-col);
+  display: none;
+}

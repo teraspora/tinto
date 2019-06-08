@@ -228,7 +228,8 @@ function showVariants() {
     console.log(`cell (${this.x}, ${this.y}) clicked -\n    Show a block of 16 variants of the clicked colour`);
     // temporarily, just turn the cell black
     // so I can see something's happened
-    this.style.backgroundColor = `#000000`;
+    // this.style.backgroundColor = `#000000`;
+    document.getElementById(`modal`).style.display = `block`;
 }
 
 function initCells(setCellColour) {
