@@ -346,11 +346,19 @@ function generate() {
         hex = rgb2Hex(cell.style.backgroundColor);
         span.innerText = hex;
         span.style.opacity = showHex ? 1 : 0;
+        if () {
+            span.style.color = `#000000`;
+        }
     });
 }   // END generate()
 
 function setStatus(text) {
-    status.innerText = text;
+    status.innerHTML = `<pre><code>${text}</code></pre>`;
+}
+
+function rgb2NumericComponents(colour) {
+    let rgb = colour.slice(4,-1).split(`,`);
+    return [Number(rgb[0]), Number(rgb[1]), Number(rgb[2])];
 }
 
 function rgb2Hex(colour) {
@@ -361,7 +369,15 @@ function rgb2Hex(colour) {
       + (`0` + Number(rgb[2]).toString(16)).slice(-2);
 }
 
-// Code for this function modified from
+function rgb2HexStringComponents(colour) {
+    let rgb = colour.slice(4,-1).split(`,`);
+    return [
+        (`0` + Number(rgb[0]).toString(16)).slice(-2),
+        (`0` + Number(rgb[1]).toString(16)).slice(-2),
+        (`0` + Number(rgb[2]).toString(16)).slice(-2)
+    ];
+}
+
 // https://developer.mozilla.org/samples/domref/dispatchEvent.html
 function simulateSliderInput(slider) {
   let ev = document.createEvent("MouseEvents");
