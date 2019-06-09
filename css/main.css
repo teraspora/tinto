@@ -488,10 +488,10 @@ header {
     border: none;
 }
 
-#controls > .clear {
+/*#controls > .clear {
     justify-self: end;
 }
-
+*/
 #settings {
     grid-column: 1/-1;
     overflow-y: scroll;
@@ -499,7 +499,7 @@ header {
     padding-top: 2vh;
 }
 
-#show-hex, #clear {
+#show-hex, #random-hsl, #random-rgb {
     align-self: center;
     color: var(--bright-text-col);
     background-color: var(--bg-dark-col);

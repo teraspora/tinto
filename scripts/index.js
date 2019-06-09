@@ -19,6 +19,7 @@ let names = [`Red`, `Green`, `Blue`, `Hue`, `Saturation`, `Lightness`];
 let showHex = false;    // user button to toggle this
 // Start somewhere different on the hue circle each time
 let hueOffset = randInt(360);   
+let randomMode = `hsl`;
 
 // Get refs to all switches (radio buttons)
 const onSwitches = [];
@@ -219,14 +220,18 @@ document.getElementById("show-hex").addEventListener('click', function() {
     generate();
 });
 
-document.getElementById("clear").addEventListener('click', function() {
+document.getElementById("random-hsl").addEventListener('click', ev => {randomMode = `hsl`; reset();});
+document.getElementById("random-rgb").addEventListener('click', ev => {randomMode = `rgb`; reset();});
+
+// =================================================================================================
+
+
+function reset() {
     activeSliders.clear();
     setSliderOpacity();
     setSwitches();
     generate();
-});
-
-// =================================================================================================
+}
 
 function showVariants() {
     // will show a block of 16 variants of the clicked colour
@@ -271,15 +276,17 @@ function setSliderOpacity() {
 function generate() {
     switch (activeSliders.group) {
         case -1:    // If no sliders fixed, generate a grid of random colours
-            setStatus(`No sliders active...`);
-                    cells.forEach(cell => {
-                cell.style.backgroundColor = `hsl(${randInt(360)}, ${randInt(101)}%, ${randInt(101)}%)`;
+            setStatus(`Random ${randomMode.toUpperCase()}`);
+            cells.forEach(cell => {
+                cell.style.backgroundColor = randomMode == `hsl` ?
+                    `hsl(${randInt(360)}, ${randInt(101)}%, ${randInt(101)}%)`
+                    : `rgb(${randInt(256)}, ${randInt(256)}, ${randInt(256)})`;
             });
             break;
         case 0:     // Handle RGB cases
             switch (activeSliders.activeCount) {
                 case 1: 
-                    setStatus(`Just 1 rgb slider active...`);
+                    setStatus(`${names[activeSliders.first]}:  ${values[activeSliders.first]} `);
                     cells.forEach(cell => {
                         let rgb = activeSliders.has(0) ? [values[0], rgbFactor * cell.x, rgbFactor * cell.y]
                             : (activeSliders.has(1) ? [rgbFactor * cell.x, values[1], rgbFactor * cell.y]
@@ -288,7 +295,7 @@ function generate() {
                     });
                     break;
                 case 2:
-                    setStatus(`2 rgb sliders active...`);
+                    setStatus(`${names[activeSliders.first]}:  ${values[activeSliders.first]}, ${names[activeSliders.second]}:  ${values[activeSliders.second]}`);
                     cells.forEach(cell => {
                         let rgb = activeSliders.has(1) && activeSliders.has(2) ?
                             [(cell.y * W + cell.x) * rgb1dFactor, values[1], values[2]]
@@ -303,7 +310,7 @@ function generate() {
         case 1:     // Handle HSL cases
             switch (activeSliders.activeCount) {
                 case 1: 
-                    setStatus(`Just 1 hsl slider active...`);
+                    setStatus(`${names[activeSliders.first]}:  ${values[activeSliders.first]} `);
                     cells.forEach(cell => {
                         let hsl = activeSliders.has(3) ? [values[3], cell.x * 100 / W, cell.y * maxLightness / (H - 1) + minLightness]
                             : (activeSliders.has(4) ? [cell.x * 360 / W, values[4], cell.y * maxLightness / (H - 1) + minLightness]
@@ -312,7 +319,7 @@ function generate() {
                     });
                     break;
                 case 2:
-                    setStatus(`2 hsl sliders active...`);
+                    setStatus(`${names[activeSliders.first]}:  ${values[activeSliders.first]}, ${names[activeSliders.second]}:  ${values[activeSliders.second]}`);
                     cells.forEach(cell => {
                         let hsl = activeSliders.has(4) && activeSliders.has(5) ?
                             [(cell.y * W + cell.x) * hueFactor, values[4], values[5]]
