@@ -17,6 +17,7 @@ const [minLightness, maxLightness] = [16, 80]
 let values = [0, 0, 0, 0, 0, 0];
 let names = [`Red`, `Green`, `Blue`, `Hue`, `Saturation`, `Lightness`];
 let showHex = false;    // user button to toggle this
+let showCssNames = true;
 // Start somewhere different on the hue circle each time
 let hueOffset = randInt(360);   
 let randomMode = `hsl`;
@@ -334,7 +335,8 @@ function generate() {
     }   // END outermost switch 
     cells.forEach(cell => {
         let span = cell.firstChild;
-        span.innerText = rgb2Hex(cell.style.backgroundColor);
+        hex = rgb2Hex(cell.style.backgroundColor);
+        span.innerText = hex;
         span.style.opacity = showHex ? 1 : 0;
     });
 }   // END generate()
