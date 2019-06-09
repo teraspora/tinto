@@ -51,6 +51,16 @@ for (let i = 0; i < 6; i++) {
 // Get refs to the switch-holders
 const switchboxes = document.getElementsByClassName(`switch`);
 
+// Modal dialog
+const miniGrid = document.getElementById(`mini-grid`);
+const modal = document.getElementById(`modal`);
+document.addEventListener('click', ev => {
+    if (modal.style.display = `block` && ev.target != modal && ev.target != miniGrid
+        && !ev.target.classList.contains(`hex-colour`) && !ev.target.classList.contains(`cell`)) {
+        modal.style.display = `none`;
+    }
+});
+
 // Need this class to keep track of which sliders are active
 class GroupedTwoElementQueue {
     constructor() {
@@ -205,7 +215,7 @@ cells.forEach(cell => {
     cell.classList.add('cell');
     let span = document.createElement(`SPAN`);  // default opacity 0 for hex colours
     span.style.lineHeight = window.getComputedStyle(cell).height;   // centre it on y axis
-    span.classList.add(`hexColour`)
+    span.classList.add(`hex-colour`)
     cell.appendChild(span);
 });
 
@@ -221,8 +231,8 @@ document.getElementById("show-hex").addEventListener('click', function() {
     generate();
 });
 
-document.getElementById("random-hsl").addEventListener('click', ev => {randomMode = `hsl`; reset();});
-document.getElementById("random-rgb").addEventListener('click', ev => {randomMode = `rgb`; reset();});
+document.getElementById("random-hsl").addEventListener('click', _ => {randomMode = `hsl`; reset();});
+document.getElementById("random-rgb").addEventListener('click', _ => {randomMode = `rgb`; reset();});
 
 // =================================================================================================
 
@@ -235,14 +245,12 @@ function reset() {
 }
 
 function showVariants() {
-    // will show a block of 16 variants of the clicked colour
+    // will show a block of 9 variants of the clicked colour
     // clicking one of these adds it to the palette,
     // gracefully, fades the block and goes back to the previous view;
-    console.log(`cell (${this.x}, ${this.y}) clicked -\n    Show a block of 16 variants of the clicked colour`);
-    // temporarily, just turn the cell black
-    // so I can see something's happened
-    // this.style.backgroundColor = `#000000`;
-    document.getElementById(`modal`).style.display = `block`;
+    console.log(`cell (${this.x}, ${this.y}) clicked -\n    Show a block of 9 variants of the clicked colour`);
+    miniGrid.innerText = `Hello Galaxies!`;
+    modal.style.display = `block`;
 }
 
 function initCells(setCellColour) {
