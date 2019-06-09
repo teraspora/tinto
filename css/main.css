@@ -499,7 +499,7 @@ header {
     padding-top: 2vh;
 }
 
-#show-hex {
+#show-hex, #clear {
     align-self: center;
     color: var(--bright-text-col);
     background-color: var(--bg-dark-col);

@@ -8,7 +8,9 @@ let randInt = n => Math.floor(n * Math.random());
 
 const [W, H] = [8, 8];
 const hueFactor = 360 / (W * H - 1);
-const rgbFactor = 255 / (W - 1);  // if W != H will need separate factors
+const rgbFactor = 256 / (W - 1);  // if W != H will need separate factors
+const rgb1dFactor = 256 / (W * H - 1);
+const slFactor = 100 / (W * H - 1);
 const [minLightness, maxLightness] = [16, 80]
 
 // Values set randomly or by user for R, G, B, H, S, L respectively
@@ -53,6 +55,7 @@ class GroupedTwoElementQueue {
         this._first = -1;
         this._second = -1;
         this._activeCount = 0;
+        this._group = -1;
     }
     get first() {
         return this._first;
@@ -73,6 +76,12 @@ class GroupedTwoElementQueue {
         this._activeCount = value;
     }
     
+    get group() {
+        return this._group;
+    }
+    set group(value) {  // -1: none active; 0: RGB; 1: HSL
+        this._group = value > 0 ? 1 : value < 0 ? -1 : 0;
+    }
     static siblings(sliderA, sliderB) {
         if (sliderA < 0 || sliderB < 0) {
             return false;
@@ -84,6 +93,7 @@ class GroupedTwoElementQueue {
         this._first = -1;
         this._second = -1;
         this._activeCount = 0;
+        this._group = -1;
     }
 
     has(slider) {
@@ -91,6 +101,10 @@ class GroupedTwoElementQueue {
     }
 
     push(slider) {
+        if (slider < 0 || slider > 5) return;
+
+        this._group = slider % 3;   // 0, 1, 2 => (0 - RGB); 3, 4, 5 => (1 - HSL)
+
         if (this.has(slider)) {
             if (this._first == slider && this._second != -1) {
                 this._first = this._second;
@@ -129,17 +143,20 @@ class GroupedTwoElementQueue {
             if (this._first == slider) {
                 if (this._second == -1) {   // now all are turned off
                     this._first = -1;
-                    this._activeCount = 0; 
+                    this._activeCount = 0;
+                    this._group = -1; 
                 }
                 else {                      // shift second to first and turn off second
                     this._first = this._second;
                     this._second = -1;
-                    this._activeCount = 1;  
+                    this._activeCount = 1;
+                    // group stays the same  
                 }
             }
             else {                          // just turn off second, leaving first
                 this._second = -1;
                 this._activeCount = 1;
+                // group stays the same
             }
         }
     }
@@ -202,6 +219,13 @@ document.getElementById("show-hex").addEventListener('click', function() {
     generate();
 });
 
+document.getElementById("clear").addEventListener('click', function() {
+    activeSliders.clear();
+    setSliderOpacity();
+    setSwitches();
+    generate();
+});
+
 // =================================================================================================
 
 function showVariants() {
@@ -244,73 +268,61 @@ function setSliderOpacity() {
 }
 
 function generate() {
-    if (activeSlider < 0) {
-        if (fixRed) {
-            values[0] = randInt(256);
-            setStatus(`Red: ${values[0]}`);
-            cells.forEach(cell => cell.style.backgroundColor =  
-                `rgb(${values[0]}, ${rgbFactor * cell.x}, ${rgbFactor * cell.y})`);
-        }
-        else if (fixGreen) {
-            values[1] = randInt(256);
-            setStatus(`Green: ${values[1]}`);
-            cells.forEach(cell => cell.style.backgroundColor =  
-                `rgb(${rgbFactor * cell.x}, ${values[1]}, ${rgbFactor * cell.y})`);
-        }
-        else if (fixBlue) {
-            values[2] = randInt(256);
-            setStatus(`Blue: ${values[2]}`);
-            cells.forEach(cell => cell.style.backgroundColor =  
-                `rgb(${rgbFactor * cell.x}, ${rgbFactor * cell.y}, ${values[2]})`);       
-        }
-        else if (fixHue) {
-            values[3] = randInt(360);
-            setStatus(`Hue: ${values[3]}`);
-            cells.forEach(cell => cell.style.backgroundColor =  
-                `hsl(${values[3]}, ${cell.x * 100 / W}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
-        }
-        else if (fixSaturation) {
-            values[4] = randInt(101);
-            setStatus(`Saturation: ${values[4]}`);
-            cells.forEach(cell => cell.style.backgroundColor =  
-                `hsl(${cell.x * 360 / W}, ${values[4]}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
-        }
-        else if (fixLightness) {
-            values[5] = randInt(101);
-            setStatus(`Lightness: ${values[5]}`);
-            cells.forEach(cell => cell.style.backgroundColor =  
-                `hsl(${cell.x * 360 / W}, ${(H - cell.y) * 100 / W}%, ${values[5]}%)`);
-        }
-    }
-    else {
-        setStatus(`${names[activeSlider]}: ${values[activeSlider]}`);
-        switch (activeSlider) {
-            case 0: 
-                cells.forEach(cell => cell.style.backgroundColor =  
-                `rgb(${values[0]}, ${rgbFactor * cell.x}, ${rgbFactor * cell.y})`);
-                break;
-            case 1: 
-                cells.forEach(cell => cell.style.backgroundColor =  
-                `rgb(${rgbFactor * cell.x}, ${values[1]}, ${rgbFactor * cell.y})`);
-                break;          
-            case 2: 
-                cells.forEach(cell => cell.style.backgroundColor =  
-                `rgb(${rgbFactor * cell.x}, ${rgbFactor * cell.y}, ${values[2]})`);
-                break;          
-            case 3: 
-                cells.forEach(cell => cell.style.backgroundColor =  
-                `hsl(${values[3]}, ${cell.x * 100 / W}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
-                break;          
-            case 4: 
-                cells.forEach(cell => cell.style.backgroundColor =  
-                `hsl(${cell.x * 360 / W}, ${values[4]}%, ${cell.y * maxLightness / (H - 1) + minLightness}%)`);
-                break;          
-            case 5: 
-                cells.forEach(cell => cell.style.backgroundColor =  
-                `hsl(${cell.x * 360 / W}, ${(H - cell.y) * 100 / W}%, ${values[5]}%)`);
-                break;
-        }            
-    }
+    switch (activeSliders.group) {
+        case -1:    // If no sliders fixed, generate a grid of random colours
+            cells.forEach(cell => {
+                cell.style.backgroundColor = `rgb(${randInt(256)}, ${randInt(256)}, ${randInt(256)})`;
+            });
+            break;
+        case 0:     // Handle RGB cases
+            switch (activeSliders.activeCount) {
+                case 1: 
+                    setStatus(`coming soon...`);
+                    cells.forEach(cell => {
+                        let rgb = activeSliders.has(0) ? [values[0], rgbFactor * cell.x, rgbFactor * cell.y]
+                            : activeSliders.has(1) ? [rgbFactor * cell.x, values[1], rgbFactor * cell.y]
+                            : [rgbFactor * cell.x, rgbFactor * cell.y, values[2]];
+                        cell.style.backgroundColor = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+                    });
+                    break;
+                case 2:
+                    setStatus(`coming soon...`);
+                    cells.forEach(cell => {
+                        let rgb = activeSliders.has(1) && activeSliders.has(2) ?
+                            [(cell.y * W + cell.x) * rgb1dFactor, values[1], values[2]]
+                            : activeSliders.has(0) && activeSliders.has(2) ?
+                            [values[0], (cell.y * W + cell.x) * rgb1dFactor, values[2]]
+                            : [values[0], values[1], (cell.y * W + cell.x) * rgb1dFactor];
+                        cell.style.backgroundColor = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+                    });
+                    break;
+            }   // END switch 
+            break;      // not needed at present; leave for safety in case more code added above          
+        case 1:     // Handle HSL cases
+            switch (activeSliders.activeCount) {
+                case 1: 
+                    setStatus(`coming soon...`);
+                    cells.forEach(cell => {
+                        let hsl = activeSliders.has(4) ? [values[4], cell.x * 100 / W, cell.y * maxLightness / (H - 1) + minLightness]
+                            : activeSliders.has(5) ? [cell.x * 360 / W, values[5], cell.y * maxLightness / (H - 1) + minLightness]
+                            : [cell.x * 360 / W, cell.y * 100 / H, values[6]];
+                        cell.style.backgroundColor = `hsl(${hsl[0]}, ${hsl[1]}, ${hsl[2]})`;
+                    });
+                    break;
+                case 2:
+                    setStatus(`coming soon...`);
+                    cells.forEach(cell => {
+                        let hsl = activeSliders.has(5) && activeSliders.has(6) ?
+                            [(cell.y * W + cell.x) * hueFactor, values[5], values[6]]
+                            : activeSliders.has(4) && activeSliders.has(6) ?
+                            [values[4], (cell.y * W + cell.x) * slFactor, values[6]]
+                            : [values[4], values[5], (cell.y * W + cell.x) * slFactor];
+                        cell.style.backgroundColor = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+                    });
+                    break;
+            }   // END switch
+            break;   // not needed at present; leave for safety in case more code added above
+    }   // END outermost switch 
     cells.forEach(cell => {
         let span = cell.firstChild;
         span.innerText = rgb2Hex(cell.style.backgroundColor);
