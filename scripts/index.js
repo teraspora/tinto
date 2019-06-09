@@ -14,42 +14,139 @@ const [minLightness, maxLightness] = [16, 80]
 // Values set randomly or by user for R, G, B, H, S, L respectively
 let values = [0, 0, 0, 0, 0, 0];
 let names = [`Red`, `Green`, `Blue`, `Hue`, `Saturation`, `Lightness`];
-let random = true;
-let showHex = false;
-let liveChanges = true;
+let showHex = false;    // user button to toggle this
 // Start somewhere different on the hue circle each time
 let hueOffset = randInt(360);   
-let [fixRed, fixGreen, fixBlue] = [false, false, false];
-let [fixHue, fixSaturation, fixLightness] = [false, false, false];
 
-// Get refs to all radio buttons
-const redOffRadio = document.getElementById(`red-off`);
-const redOnRadio = document.getElementById(`red-on`);
-const greenOffRadio = document.getElementById(`green-off`);
-const greenOnRadio = document.getElementById(`green-on`);
-const blueOffRadio = document.getElementById(`blue-off`);
-const blueOnRadio = document.getElementById(`blue-on`);
-
-const hueOffRadio = document.getElementById(`hue-off`);
-const hueOnRadio = document.getElementById(`hue-on`);
-const saturationOffRadio = document.getElementById(`saturation-off`);
-const saturationOnRadio = document.getElementById(`saturation-on`);
-const lightnessOffRadio = document.getElementById(`lightness-off`);
-const lightnessOnRadio = document.getElementById(`lightness-on`);
-
-const sliderWrappers = document.getElementsByClassName(`wrapper`);
-const switches = document.getElementsByClassName(`switch`);
-for(let w of sliderWrappers) {
-    w.addEventListener('click', _ => {
-        setSliderOpacity(1); 
-        setRadioOpacity(0.5);});
+// Get refs to all switches (radio buttons)
+const onSwitches = [];
+const offSwitches = [];
+// Event listeners for the 'VARY/FIX' radio buttons
+for (let i = 0; i < 6; i++) {
+    onSwitches[i] = document.getElementById(`on-${i}`);
+    offSwitches[i] = document.getElementById(`off-${i}`);
+    onSwitches[i].addEventListener('change', function() {
+        simulateSliderInput(i);
+    });
+    offSwitches[i].addEventListener('change', function() {
+        activeSliders.remove(i);
+        setSliderOpacity();
+        generate();
+    });                        
 }
-// -1: none active; 0: red active; 1: green active ... blue 2, hue 3, sat 4, lig 5
-let activeSlider = -1
-// and the grid of coloured squares
-const colourGrid = document.getElementById("colour-grid");
-// and the status indicator
-const status = document.getElementById("status");
+
+// Get refs to all slider wrappers
+const sliderWrappers = document.getElementsByClassName(`wrapper`);
+// Event listeners for the sliders
+for (let i = 0; i < 6; i++) {
+    sliderWrappers[i].addEventListener('click', _ => {
+        simulateSliderInput(i);
+    });
+}
+
+// Get refs to the switch-holders
+const switchboxes = document.getElementsByClassName(`switch`);
+
+// Need this class to keep track of which sliders are active
+class GroupedTwoElementQueue {
+    constructor() {
+        this._first = -1;
+        this._second = -1;
+        this._activeCount = 0;
+    }
+    get first() {
+        return this._first;
+    }
+    set first(value) {
+        this._first = value;
+    }
+    get second() {
+        return this._second;
+    }
+    set second(value) {
+        this._second = value;
+    }
+    get activeCount() {
+        return this._activeCount;
+    }
+    set activeCount(value) {
+        this._activeCount = value;
+    }
+    
+    static siblings(sliderA, sliderB) {
+        if (sliderA < 0 || sliderB < 0) {
+            return false;
+        }
+        return (sliderA - 2.5) *  (sliderB - 2.5) > 0;    // test if both in same group (RGB or HSL)
+    }
+
+    clear() {
+        this._first = -1;
+        this._second = -1;
+        this._activeCount = 0;
+    }
+
+    has(slider) {
+        return this._first == slider || this._second == slider;
+    }
+
+    push(slider) {
+        if (this.has(slider)) {
+            if (this._first == slider && this._second != -1) {
+                this._first = this._second;
+                this._second = slider; 
+            }
+        }
+        else if (this._first == -1) { // if both are unset
+            this._first = slider;
+            this._activeCount = 1;
+        }
+        else if (this._second == -1) {   // if only first is set
+            if (this.constructor.siblings(this._first, slider)) {    // if new one in same group, append 
+                this._second = slider;
+                this._activeCount = 2;
+            }
+            else {  // if new one in different group, overwrite first, starting anew
+                this._first = slider;
+                this._second = -1;
+                this._activeCount = 1;
+            }
+        }
+        else if (this.constructor.siblings(this._second, slider)) {  // if new one in same group, push down
+            this._first = this._second;
+            this._second = slider;
+            this._activeCount = 2;
+        }
+        else {  // if new one in different group, overwrite first, starting anew
+            this._first = slider;
+            this._second = -1;
+                this._activeCount = 1;
+        }
+    }
+
+    remove(slider) {
+        if (this.has(slider)) {
+            if (this._first == slider) {
+                if (this._second == -1) {   // now all are turned off
+                    this._first = -1;
+                    this._activeCount = 0; 
+                }
+                else {                      // shift second to first and turn off second
+                    this._first = this._second;
+                    this._second = -1;
+                    this._activeCount = 1;  
+                }
+            }
+            else {                          // just turn off second, leaving first
+                this._second = -1;
+                this._activeCount = 1;
+            }
+        }
+    }
+}
+
+// -1: none active; 0: red; 1: green ... , 5: lig
+const activeSliders = new GroupedTwoElementQueue();
 
 // Range slider code, adapted from A PEN BY Marine Piette
 // at https://codepen.io/mayuMPH/pen/ZjxGEY
@@ -57,162 +154,46 @@ const rangeSliders = [];
 const rangeBullets = [];
 for (let i = 0; i < 6; i++) {
     rangeSliders[i] = document.getElementById("rs-range-line-" + i);
-    rangeSliders[i].addEventListener("input", showSliderValue, false);
+    rangeSliders[i].addEventListener("input", handleSliderValueChange, false);
     rangeBullets[i] = document.getElementById("rs-bullet-" + i);
 }
 
-function showSliderValue() {
-  setSliderOpacity(1);
-  setRadioOpacity(0.5);
-  activeSlider = Number(this.id.substr(-1));
-  let slider = rangeSliders[activeSlider];
-  let bullet = rangeBullets[activeSlider];
-  values[activeSlider] = slider.value;
-  bullet.innerHTML = values[activeSlider];
-  let bulletPosition = (values[activeSlider] / slider.max);
+function handleSliderValueChange() {
+  let currentSlider = Number(this.id.substr(-1));
+  activeSliders.push(currentSlider);
+  setSliderOpacity();
+  setSwitches();
+  let slider = rangeSliders[currentSlider];
+  let bullet = rangeBullets[currentSlider];
+  values[currentSlider] = slider.value;
+  bullet.innerHTML = values[currentSlider];
+  let bulletPosition = (values[currentSlider] / slider.max);
   bullet.style.left = (bulletPosition * slider.clientWidth) + "px";
-  setStatus(`${names[activeSlider]}: ${values[activeSlider]}`);
-  resetRgbRadios();
-  resetHslRadios();
-  if (liveChanges) generate();
+  setStatus(`${names[currentSlider]}: ${values[currentSlider]}`);
+  generate();
 }
-
-function highlightSlider(currentSlider) {
-    currentSlider.style.transform = `scale(1.1)`;
-    currentSlider.style.filter = `invert(100%)`;
-}
-
-function unHighlightSlider(currentSlider) {
-    currentSlider.style.transform = ``;
-    currentSlider.style.filter = ``;
-}
-
 
 // ==========================================================================
 
-/*
-    Create a block of coloured squares
-*/
+// Grid of coloured squares
+const colourGrid = document.getElementById("colour-grid");
+
 initCells((i, j) => `hsl(${((j * W + i) * hueFactor + hueOffset) % 360}, 100%, 48%)`)
 
 let cells = Array.from(colourGrid.children);
 cells.forEach(cell => {
     cell.addEventListener('click', showVariants);
     cell.classList.add('cell');
-    let span = document.createElement(`SPAN`);
-    span.style.lineHeight = window.getComputedStyle(cell).height;
+    let span = document.createElement(`SPAN`);  // default opacity 0 for hex colours
+    span.style.lineHeight = window.getComputedStyle(cell).height;   // centre it on y axis
     span.classList.add(`hexColour`)
     cell.appendChild(span);
 });
 
-// Event listeners for the 'VARY/FIX' radio buttons
-redOnRadio.addEventListener('change', function() {
-    [fixRed, fixGreen, fixBlue] = [true, false, false];
-    [greenOffRadio.checked, greenOnRadio.checked, blueOffRadio.checked, blueOnRadio.checked]
-        = [true, false, true, false];
-    resetHslRadios();
-    activeSlider = -1;
-    setRadioOpacity(1);
-    setSliderOpacity(0.5);
-});
-
-redOffRadio.addEventListener('change', function() {
-    fixRed = false;
-    activeSlider = -1;
-    setRadioOpacity(1);
-    setSliderOpacity(0.5);
-});
-
-greenOnRadio.addEventListener('change', function() {
-    [fixRed, fixGreen, fixBlue] = [false, true, false];
-    [redOffRadio.checked, redOnRadio.checked, blueOffRadio.checked, blueOnRadio.checked]
-        = [true, false, true, false];
-    resetHslRadios();
-    activeSlider = -2;
-    setRadioOpacity(1);
-    setSliderOpacity(0.5);
-});
-
-greenOffRadio.addEventListener('change', function() {
-    fixGreen = false;
-    activeSlider = -2;
-    setRadioOpacity(1);
-    setSliderOpacity(0.5);
-});
-
-blueOnRadio.addEventListener('change', function() {
-    [fixRed, fixGreen, fixBlue] = [false, false, true];
-    [redOffRadio.checked, redOnRadio.checked, greenOffRadio.checked, greenOnRadio.checked]
-        = [true, false, true, false];
-    resetHslRadios();
-    setRadioOpacity(1);
-    activeSlider = -3;
-    setSliderOpacity(0.5);
-});
-
-blueOffRadio.addEventListener('change', function() {
-    fixBlue = false;
-    setRadioOpacity(1);
-    activeSlider = -3;
-    setSliderOpacity(0.5);
-});
-
-// =======================================================================================
-
-hueOnRadio.addEventListener('change', function() {
-    [fixHue, fixSaturation, fixLightness] = [true, false, false];
-    [saturationOffRadio.checked, saturationOnRadio.checked, lightnessOffRadio.checked, lightnessOnRadio.checked]
-        = [true, false, true, false];
-    resetRgbRadios();
-    setRadioOpacity(1);
-    activeSlider = -4;
-    setSliderOpacity(0.5);
-});
-
-hueOffRadio.addEventListener('change', function() {
-    fixHue = false;
-    activeSlider = -4;
-    setRadioOpacity(1);
-    setSliderOpacity(0.5);
-});
-
-saturationOnRadio.addEventListener('change', function() {
-    [fixHue, fixSaturation, fixLightness] = [false, true, false];
-    [hueOffRadio.checked, hueOnRadio.checked, lightnessOffRadio.checked, lightnessOnRadio.checked]
-        = [true, false, true, false];
-    resetRgbRadios();
-    activeSlider = -5;
-    setRadioOpacity(1);
-    setSliderOpacity(0.5);
-});
-
-saturationOffRadio.addEventListener('change', function() {
-    fixSaturation = false;
-    activeSlider = -5;
-    setRadioOpacity(1);
-    setSliderOpacity(0.5);
-});
-
-lightnessOnRadio.addEventListener('change', function() {
-    [fixHue, fixSaturation, fixLightness] = [false, false, true];
-    [hueOffRadio.checked, hueOnRadio.checked, saturationOffRadio.checked, saturationOnRadio.checked]
-        = [true, false, true, false];
-    resetRgbRadios();
-    activeSlider = -6;
-    setRadioOpacity(1);
-    setSliderOpacity(0.5);
-});
-
-lightnessOffRadio.addEventListener('change', function() {
-    fixLightness = false;
-    activeSlider = -6;
-    setRadioOpacity(1);
-    setSliderOpacity(0.5);
-});
 // =================================================================================================
 
-// Listener for 'Generate' button
-document.getElementById("generate").addEventListener('click', generate);
+// Status indicator
+const status = document.getElementById("status");
 
 // Listener for 'Show Hex' button
 document.getElementById("show-hex").addEventListener('click', function() {
@@ -247,57 +228,23 @@ function initCells(setCellColour) {
     }
 }
 
-function resetHslRadios() {
-    [fixHue, fixSaturation, fixLightness] = [false, false, false];
-    hueOffRadio.checked = true; 
-    hueOnRadio.checked = false; 
-    saturationOffRadio.checked = true; 
-    saturationOnRadio.checked = false; 
-    lightnessOffRadio.checked = true; 
-    lightnessOnRadio.checked = false; 
-}
-
-function resetRgbRadios() {
-    [fixRed, fixGreen, fixBlue] = [false, false, false];
-    redOffRadio.checked = true; 
-    redOnRadio.checked = false; 
-    greenOffRadio.checked = true;
-    greenOnRadio.checked = false; 
-    blueOffRadio.checked = true; 
-    blueOnRadio.checked = false; 
-}
-
-function setSliderOpacity(opacity) {
-    for (let w of sliderWrappers) {
-        w.style.opacity = opacity;
-    }
-}
-
-function dimOtherSliders() {
+function setSwitches() {
     for (let i = 0; i < 6; i++) {
-        if (i != activeSlider) {
-            sliderWrappers[i].style.opacity = 0.3;
-        }
+        let sliderIsActive = activeSliders.has(i);
+        onSwitches[i].checked = sliderIsActive;
+        offSwitches[i].checked = !sliderIsActive;
     }
+     
 }
 
-function setRadioOpacity(opacity) {
-    for (let s of switches) {
-        s.style.opacity = opacity;
-    }
-}
-
-function dimOtherSwitches() {
+function setSliderOpacity() {
     for (let i = 0; i < 6; i++) {
-        if (i + 1 != -activeSlider) {
-            switches[i].style.opacity = 0.3;
-        }
+        sliderWrappers[i].style.opacity = activeSliders.has(i) ? 1 : 0.3;
     }
 }
 
 function generate() {
     if (activeSlider < 0) {
-        dimOtherSwitches();
         if (fixRed) {
             values[0] = randInt(256);
             setStatus(`Red: ${values[0]}`);
@@ -337,7 +284,6 @@ function generate() {
     }
     else {
         setStatus(`${names[activeSlider]}: ${values[activeSlider]}`);
-        dimOtherSliders();
         switch (activeSlider) {
             case 0: 
                 cells.forEach(cell => cell.style.backgroundColor =  
@@ -382,4 +328,14 @@ function rgb2Hex(colour) {
       + (`0` + Number(rgb[0]).toString(16)).slice(-2)
       + (`0` + Number(rgb[1]).toString(16)).slice(-2)
       + (`0` + Number(rgb[2]).toString(16)).slice(-2);
+}
+
+// Code for this function modified from
+// https://developer.mozilla.org/samples/domref/dispatchEvent.html
+function simulateSliderInput(slider) {
+  let ev = document.createEvent("MouseEvents");
+  let target = rangeSliders[slider]
+  ev.initMouseEvent("input", true, true, window,
+    0, 0, 0, 0, 0, false, false, false, false, 0, null);
+  target.dispatchEvent(ev);  
 }

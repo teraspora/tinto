@@ -479,7 +479,7 @@ header {
     font-size: 1.2vw;
 }
 
-#controls *, #generate {
+#controls * {
     user-select: none;
 }
 
@@ -499,7 +499,7 @@ header {
     padding-top: 2vh;
 }
 
-#generate, #show-hex {
+#show-hex {
     align-self: center;
     color: var(--bright-text-col);
     background-color: var(--bg-dark-col);
@@ -515,43 +515,30 @@ header {
     user-select: text; 
 }
 
-[id^="tbtn"] {
+/*[id^="tbtn"] {
     background-color: black;
     border: 1px solid var(--bright-col);
-}
+}*/
 
-#red-radio-label {
+#radio-label-0 {
     color: red;
 }
 
-#green-radio-label {
+#radio-label-1 {
     color: green;
 }
 
-#blue-radio-label {
+#radio-label-2 {
     color: var(--tblue);
 }
 
-.hsl-radio-label {
+.radio-label-hsl {
     color: var(--bright-text-col)
 }
 
-#tbtn-green {
-    color: green;
-}
-
-#tbtn-blue {
-    color: blue;
-}
-
-#tbtn-hue, #tbtn-saturation, #tbtn-lightness {
-    color: var(--bright-col);
-}
-
-
 /*============================================================*/
 
-#footer {
+footer {
     grid-column: 1/-1;
     grid-row: -2/-1;
     align-self: stretch;
