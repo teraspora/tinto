@@ -295,7 +295,7 @@ function generate() {
         case 0:     // Handle RGB cases
             switch (activeSliders.activeCount) {
                 case 1: 
-                    setStatus(`${names[activeSliders.first]}:  ${values[activeSliders.first]} `);
+                    setStatus(`${names[activeSliders.first]}:  ${values[activeSliders.first]}`);
                     cells.forEach(cell => {
                         let rgb = activeSliders.has(0) ? [values[0], rgbFactor * cell.x, rgbFactor * cell.y]
                             : (activeSliders.has(1) ? [rgbFactor * cell.x, values[1], rgbFactor * cell.y]
@@ -346,9 +346,7 @@ function generate() {
         hex = rgb2Hex(cell.style.backgroundColor);
         span.innerText = hex;
         span.style.opacity = showHex ? 1 : 0;
-        if () {
-            span.style.color = `#000000`;
-        }
+        span.style.color = rgbComponentSum(cell.style.backgroundColor) > 384 ? `#000000` : `#ffffff`;
     });
 }   // END generate()
 
@@ -376,6 +374,10 @@ function rgb2HexStringComponents(colour) {
         (`0` + Number(rgb[1]).toString(16)).slice(-2),
         (`0` + Number(rgb[2]).toString(16)).slice(-2)
     ];
+}
+
+function rgbComponentSum(colour) {
+    return rgb2NumericComponents(colour).reduce((x, y) => x + y);
 }
 
 // https://developer.mozilla.org/samples/domref/dispatchEvent.html
