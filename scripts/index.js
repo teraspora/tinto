@@ -307,7 +307,7 @@ function generate() {
                     cells.forEach(cell => {
                         let hsl = activeSliders.has(3) ? [values[3], cell.x * 100 / W, cell.y * maxLightness / (H - 1) + minLightness]
                             : (activeSliders.has(4) ? [cell.x * 360 / W, values[4], cell.y * maxLightness / (H - 1) + minLightness]
-                            : [cell.x * 360 / W, cell.y * 100 / H, values[6]]);
+                            : [cell.x * 360 / W, cell.y * 100 / H, values[5]]);
                         cell.style.backgroundColor = `hsl(${hsl[0]}, ${hsl[1]}%, ${hsl[2]}%)`;
                     });
                     break;
