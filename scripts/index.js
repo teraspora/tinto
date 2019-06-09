@@ -51,6 +51,37 @@ for (let i = 0; i < 6; i++) {
 // Get refs to the switch-holders
 const switchboxes = document.getElementsByClassName(`switch`);
 
+// Colour palette
+const palette = Array.from(document.getElementsByClassName(`palette`));
+let index = 0;
+palette.forEach(paletteSlot => {
+    paletteSlot.isActive = false;
+    paletteSlot.nextElementSibling.addEventListener(`click`, ev => {
+        let index = palette.findIndex(slot => slot == ev.target.previousElementSibling);
+        removeFromPalette(index);
+    });
+    paletteSlot.index = index++;
+});
+
+let paletteSize = 0;    // up to 6, inclusive
+
+function appendPalette(colour) {
+    if (paletteSize == 6) return;
+    let i;
+    for (i = 0; i < 6; i++) {
+        if (!palette[i].isActive) break;
+    }
+    palette[i].isActive = true;
+    ++paletteSize;
+    palette[i].style.backgroundColor = colour;
+}
+function removeFromPalette(index) {
+    if (!palette[index].isActive) return;
+    palette[index].isActive = false;
+    --paletteSize;
+    palette[index].style.backgroundColor = `inherit`;
+}
+
 // Modal dialog
 const miniGrid = document.getElementById(`mini-grid`);
 const modal = document.getElementById(`modal`);
@@ -211,7 +242,7 @@ initCells((i, j) => `hsl(${((j * W + i) * hueFactor + hueOffset) % 360}, 100%, 4
 
 let cells = Array.from(colourGrid.children);
 cells.forEach(cell => {
-    cell.addEventListener('click', showVariants);
+    cell.addEventListener('click', handleClickOnCell);
     cell.classList.add('cell');
     let span = document.createElement(`SPAN`);  // default opacity 0 for hex colours
     span.style.lineHeight = window.getComputedStyle(cell).height;   // centre it on y axis
@@ -244,13 +275,12 @@ function reset() {
     generate();
 }
 
-function showVariants() {
-    // will show a block of 9 variants of the clicked colour
-    // clicking one of these adds it to the palette,
-    // gracefully, fades the block and goes back to the previous view;
-    console.log(`cell (${this.x}, ${this.y}) clicked -\n    Show a block of 9 variants of the clicked colour`);
-    miniGrid.innerText = `Hello Galaxies!`;
-    modal.style.display = `block`;
+function handleClickOnCell() {
+    appendPalette(this.style.backgroundColor);
+}
+
+function handleClickOnRemove() {
+    removeFromPalette(this.index);
 }
 
 function initCells(setCellColour) {
