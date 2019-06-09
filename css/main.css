@@ -466,7 +466,7 @@ header {
     font-size: 1.4vw;
     height: 80vh;
     display: grid;
-    grid-template-columns: min-content 2fr 9fr 1fr;
+    grid-template-columns: min-content 2fr 12fr 10fr 2fr;
     grid-template-rows: repeat(6, 8fr) 52fr;
     grid-row-gap: : 10px;
     grid-column-gap: 10px;
@@ -488,10 +488,10 @@ header {
     border: none;
 }
 
-/*#controls > .clear {
+#controls > .remove {
     justify-self: end;
 }
-*/
+
 #settings {
     grid-column: 1/-1;
     overflow-y: scroll;
