@@ -257,6 +257,7 @@ function setSwitches() {
         let sliderIsActive = activeSliders.has(i);
         onSwitches[i].checked = sliderIsActive;
         offSwitches[i].checked = !sliderIsActive;
+        switchboxes[i].style.opacity = activeSliders.group == Math.trunc(i / 3) ? 1 : 0.3;
     }
      
 }
