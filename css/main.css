@@ -72,6 +72,8 @@ hr {
 pre {
   font-family: monospace, monospace; /* 1 */
   font-size: 1em; /* 2 */
+  display: inline;
+  color: var(--tblue);
 }
 
 /* Text-level semantics
@@ -490,6 +492,7 @@ header {
 
 .palette {
   transition: background-color 1s linear;
+  user-select: text !important; 
 }
 
 .remove {
@@ -838,7 +841,7 @@ ul.social-icons {
 }
 
 .hex-colour {
-  opacity: 0;
+  /*opacity: 0;*/
   color: #000000;
   font-size: 1.4rem;
   transition: opacity 0.5s ease-in;
