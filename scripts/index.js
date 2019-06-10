@@ -6,6 +6,9 @@
 // get a random integer in range [0, n]
 let randInt = n => Math.floor(n * Math.random());
 
+const BLACK = `#000000`;
+const WHITE = `#ffffff`;
+
 const [W, H] = [8, 8];
 const hueFactor = 360 / (W * H - 1);
 const rgbFactor = 256 / (W - 1);  // if W != H will need separate factors
@@ -17,6 +20,7 @@ const [minLightness, maxLightness] = [16, 80]
 let values = [0, 0, 0, 0, 0, 0];
 let names = [`Red`, `Green`, `Blue`, `Hue`, `Saturation`, `Lightness`];
 let showHex = false;    // user button to toggle this
+let showLum = false;    // user button to toggle this
 let showCssNames = true;
 // Start somewhere different on the hue circle each time
 let hueOffset = randInt(360);   
@@ -56,10 +60,11 @@ const palette = Array.from(document.getElementsByClassName(`palette`));
 let index = 0;
 palette.forEach(paletteSlot => {
     paletteSlot.isActive = false;
-    paletteSlot.nextElementSibling.addEventListener(`click`, ev => {
+    paletteSlot.nextElementSibling.addEventListener(`click`, ev => {    // Target 'Remove' buttons
         let index = palette.findIndex(slot => slot == ev.target.previousElementSibling);
         removeFromPalette(index);
     });
+    paletteSlot.style.backgroundColor = BLACK;
     paletteSlot.index = index++;
 });
 
@@ -74,12 +79,19 @@ function appendPalette(colour) {
     palette[i].isActive = true;
     ++paletteSize;
     palette[i].style.backgroundColor = colour;
+    let lum = getLuminance(colour);
+    if (showLum) {
+        palette[i].innerText = `Lum: ${lum.toFixed(3)}`;
+    }
+    palette[i].style.color = lum > 0.4 ? BLACK : WHITE;
+    
 }
 function removeFromPalette(index) {
     if (!palette[index].isActive) return;
     palette[index].isActive = false;
     --paletteSize;
     palette[index].style.backgroundColor = `inherit`;
+    palette[i].innerText = ``;
 }
 
 // Modal dialog
@@ -264,6 +276,15 @@ document.getElementById("show-hex").addEventListener('click', function() {
 
 document.getElementById("random-hsl").addEventListener('click', _ => {randomMode = `hsl`; reset();});
 document.getElementById("random-rgb").addEventListener('click', _ => {randomMode = `rgb`; reset();});
+document.getElementById("show-lum").addEventListener('click', function() {
+    showLum = !showLum;
+    this.innerText = showLum ? "HIDE LUMINANCE" : "SHOW LUMINANCE";
+    for (let paletteSlot of palette) {
+        let lum = getLuminance(paletteSlot.style.backgroundColor);
+        paletteSlot.innerText = paletteSlot.isActive  && showLum ? `${lum.toFixed(2)}` : `\xa0`;    // == &nbsp;
+    }
+    generate();
+});
 
 // =================================================================================================
 
@@ -373,41 +394,16 @@ function generate() {
     }   // END outermost switch 
     cells.forEach(cell => {
         let span = cell.firstChild;
-        hex = rgb2Hex(cell.style.backgroundColor);
-        span.innerText = hex;
+        colour = cell.style.backgroundColor;
+        hex = rgb2Hex(colour);
+        span.innerText = showLum ? `${getLuminance(colour).toFixed(2)}` : hex;
         span.style.opacity = showHex ? 1 : 0;
-        span.style.color = rgbComponentSum(cell.style.backgroundColor) > 384 ? `#000000` : `#ffffff`;
+        span.style.color = getLuminance(cell.style.backgroundColor) > 0.4 ? BLACK : WHITE;
     });
 }   // END generate()
 
 function setStatus(text) {
     status.innerHTML = `<pre><code>${text}</code></pre>`;
-}
-
-function rgb2NumericComponents(colour) {
-    let rgb = colour.slice(4,-1).split(`,`);
-    return [Number(rgb[0]), Number(rgb[1]), Number(rgb[2])];
-}
-
-function rgb2Hex(colour) {
-    let rgb = colour.slice(4,-1).split(`,`);
-    return `#`
-      + (`0` + Number(rgb[0]).toString(16)).slice(-2)
-      + (`0` + Number(rgb[1]).toString(16)).slice(-2)
-      + (`0` + Number(rgb[2]).toString(16)).slice(-2);
-}
-
-function rgb2HexStringComponents(colour) {
-    let rgb = colour.slice(4,-1).split(`,`);
-    return [
-        (`0` + Number(rgb[0]).toString(16)).slice(-2),
-        (`0` + Number(rgb[1]).toString(16)).slice(-2),
-        (`0` + Number(rgb[2]).toString(16)).slice(-2)
-    ];
-}
-
-function rgbComponentSum(colour) {
-    return rgb2NumericComponents(colour).reduce((x, y) => x + y);
 }
 
 // https://developer.mozilla.org/samples/domref/dispatchEvent.html
