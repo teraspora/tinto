@@ -40,3 +40,9 @@ function rgb2HexStringComponents(rgbColour) {
 function rgbComponentSum(rgbColour) {
     return rgb2NumericComponents(rgbColour).reduce((x, y) => x + y);
 }
+
+function contrastRatio(rgbColour_0, rgbColour_1) {
+    let [lum_0, lum_1] = [rgbColour_0, rgbColour_1].map(col => getLuminance(col));
+    let ratio = (lum_0 + 0.05) / (lum_1 + 0.05);
+    return lum_0 > lum_1 ? ratio : 1. / ratio;
+}
