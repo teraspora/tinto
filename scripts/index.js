@@ -8,6 +8,8 @@ let randInt = n => Math.floor(n * Math.random());
 
 const BLACK = `#000000`;
 const WHITE = `#ffffff`;
+const NULL_STR = ``;
+const NBSP = `\xa0`;
 
 const [W, H] = [8, 8];
 const hueFactor = 360 / (W * H - 1);
@@ -80,18 +82,17 @@ function appendPalette(colour) {
     ++paletteSize;
     palette[i].style.backgroundColor = colour;
     let lum = getLuminance(colour);
-    if (showLum) {
-        palette[i].innerText = `Lum: ${lum.toFixed(3)}`;
-    }
-    palette[i].style.color = lum > 0.4 ? BLACK : WHITE;
-    
+    let conj = showHex && showLum ? ` / ` : NBSP;
+    palette[i].innerText = `${showHex ? rgb2Hex(colour) : NBSP}${conj}${showLum ? lum.toFixed(2) : NBSP}`;
+    palette[i].style.color = lum > 0.4 ? BLACK : WHITE;    
 }
+
 function removeFromPalette(index) {
     if (!palette[index].isActive) return;
     palette[index].isActive = false;
     --paletteSize;
     palette[index].style.backgroundColor = `inherit`;
-    palette[i].innerText = ``;
+    palette[index].innerText = NBSP;
 }
 
 // Modal dialog
@@ -271,6 +272,14 @@ const status = document.getElementById("status");
 document.getElementById("show-hex").addEventListener('click', function() {
     showHex = !showHex;
     this.innerText = showHex ? "HIDE HEX" : "SHOW HEX";
+    for (let paletteSlot of palette) {
+        let colour = paletteSlot.style.backgroundColor;
+        let lum = getLuminance(colour);
+        paletteSlot.innerText = paletteSlot.isActive  && showLum ? `${lum.toFixed(2)}` : `\xa0`;    // == &nbsp;
+        let conj = showHex && showLum ? ` / ` : NBSP;
+        paletteSlot.innerText = paletteSlot.isActive ?
+            `${showHex ? rgb2Hex(colour) : NULL_STR}${conj}${showLum ? lum.toFixed(2) : NULL_STR}` : NBSP;
+    }
     generate();
 });
 
@@ -281,7 +290,9 @@ document.getElementById("show-lum").addEventListener('click', function() {
     this.innerText = showLum ? "HIDE LUMINANCE" : "SHOW LUMINANCE";
     for (let paletteSlot of palette) {
         let lum = getLuminance(paletteSlot.style.backgroundColor);
-        paletteSlot.innerText = paletteSlot.isActive  && showLum ? `${lum.toFixed(2)}` : `\xa0`;    // == &nbsp;
+        let conj = showHex && showLum ? ` / ` : NBSP;
+        paletteSlot.innerText = paletteSlot.isActive ? 
+            `${showHex ? rgb2Hex(colour) : NULL_STR}${conj}${showLum ? lum.toFixed(2) : NULL_STR}` : NBSP;        
     }
     generate();
 });
@@ -396,8 +407,8 @@ function generate() {
         let span = cell.firstChild;
         colour = cell.style.backgroundColor;
         hex = rgb2Hex(colour);
-        span.innerText = showLum ? `${getLuminance(colour).toFixed(2)}` : hex;
-        span.style.opacity = showHex ? 1 : 0;
+        span.innerText = showLum ? `${getLuminance(colour).toFixed(2)}` : (showHex ? hex : NBSP);
+        // span.style.opacity = showHex ? 1 : 0;
         span.style.color = getLuminance(cell.style.backgroundColor) > 0.4 ? BLACK : WHITE;
     });
 }   // END generate()
