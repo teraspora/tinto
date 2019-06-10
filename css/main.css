@@ -391,26 +391,67 @@ body, html {
 }
 
 /* =================================================================== */
+/*
+Note: some duplication of rules for ease of development and readability;
+*/
 
 @media only screen and (max-width: 1024px) and (orientation: portrait) {
     #page-grid {
         grid-template-columns: 90vw;
         grid-template-rows: 1fr 7fr 7fr 1fr;
     }
+
+    header {
+        grid-column: 1/-1;
+        grid-row: 1/2;
+    }
+
+    #colour-grid {
+        grid-column: 1/-1;
+        grid-row: 2/3;
+        width:80vw;
+        height: 80vw;
+    }
+    
     #controls {
         grid-column: 1/-1;
         grid-row: 3/4;            
+    }
+
+    footer {
+        grid-column: 1/-1;
+        grid-row: 4/5;
     }
 }
 
 @media only screen and (min-width: 1025px) {
     #page-grid {
         grid-template-columns: 45vw 45vw;
-        grid-template-rows: 6fr 82fr 6fr;
+        grid-template-rows: 6fr 88fr 6fr;
     }
+
+    header {
+        grid-column: 1/-1;
+        grid-row: 1/2;
+    }
+    
+    #colour-grid {
+        grid-column: 1/2;
+        grid-row: 2/3;
+        width:40vw;
+        height: 40vw;
+    }
+    
     #controls {
         grid-column: 2/-1;
-        grid-row: 2/3;            
+        grid-row: 2/3;
+        width:40vw;
+        height: 40vw;            
+    }
+
+    footer {
+        grid-column: 1/-1;
+        grid-row: 3/4;
     }
 }
 /* =================================================================== */
@@ -423,52 +464,44 @@ body, html {
 header {
     align-self: stretch;
     justify-self: stretch;
-    grid-column: 1/-1;
-    grid-row: 1/2;
 }
 
 #title {
-    font-size: 1vw;
     font-weight: normal;
-    color: var(--bright-text-col);
     font-size: 2vw;
-    background-color: var(--body-bg-col);
     border-bottom: 1px solid var(--tblue);
     padding-top: 1.5vh;
+    color: var(--bright-text-col);
+    background-color: var(--body-bg-col);
 }
 
 #colour-grid {
     display: grid;
+    grid-gap: 1px;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
     align-content: stretch;
     align-self: stretch;
     justify-self: center;
     justify-items: stretch;
-    grid-gap: 1px;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: repeat(8, 1fr);
-    grid-column: 1/2;
-    grid-row: 2/3;
-    width: 80vh;
-    height: 80vh;
 }
 
 #colour-grid > div {
     align-content: stretch;
     align-self: stretch;
     justify-self: stretch;
-    justify-items: stretch;
+    justify-items: center;
     border: 1px solid black;
 }
 
 #controls {
-    font-size: 1.4vw;
-    height: 80vh;
     display: grid;
     grid-template-columns: min-content 2fr 12fr 10fr 2fr;
     grid-template-rows: repeat(6, 8fr) 52fr;
     grid-row-gap: : 10px;
     grid-column-gap: 10px;
     align-items: center;
+    font-size: 1.4vw;
     padding: 8px;
 }
 #controls > * {
@@ -496,10 +529,10 @@ header {
 }
 
 .remove {
-  background-color: var(--bg-dark-col);
-  color: var(--warning-col);
-  border: 1px solid var(--tblue);
-  border-radius: 6px;
+    background-color: var(--bg-dark-col);
+    color: var(--warning-col);
+    border: 1px solid var(--tblue);
+    border-radius: 6px;
 }
 
 #settings {
@@ -549,8 +582,6 @@ header {
 /*============================================================*/
 
 footer {
-    grid-column: 1/-1;
-    grid-row: -2/-1;
     align-self: stretch;
     justify-self: stretch;
     font-size: 1.4vw;
