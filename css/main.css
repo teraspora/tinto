@@ -388,6 +388,7 @@ body, html {
     border: 2px ridge var(--tblue);
     border-radius: 5px;
     padding-left: 2vw;
+    padding-bottom: 4vh;
 }
 
 /* =================================================================== */
@@ -398,7 +399,7 @@ Note: some duplication of rules for ease of development and readability;
 @media only screen and (max-width: 1024px) and (orientation: portrait) {
     #page-grid {
         grid-template-columns: 90vw;
-        grid-template-rows: 1fr 7fr 7fr 1fr;
+        grid-template-rows: 1fr 9fr 9fr;
     }
 
     header {
@@ -422,12 +423,16 @@ Note: some duplication of rules for ease of development and readability;
         grid-column: 1/-1;
         grid-row: 4/5;
     }
+
+    #title {
+      font-size: 5vw;
+    }
 }
 
 @media only screen and (min-width: 1025px) {
     #page-grid {
         grid-template-columns: 45vw 45vw;
-        grid-template-rows: 6fr 88fr 6fr;
+        grid-template-rows: 1fr 9fr;
     }
 
     header {
@@ -453,6 +458,10 @@ Note: some duplication of rules for ease of development and readability;
         grid-column: 1/-1;
         grid-row: 3/4;
     }
+
+    #title {
+      font-size: 2vw;
+    }
 }
 /* =================================================================== */
 
@@ -468,7 +477,6 @@ header {
 
 #title {
     font-weight: normal;
-    font-size: 2vw;
     border-bottom: 1px solid var(--tblue);
     padding-top: 1.5vh;
     color: var(--bright-text-col);
