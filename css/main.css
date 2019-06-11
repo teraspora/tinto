@@ -563,7 +563,13 @@ header {
     padding-top: 1vh;
 }
 
-#show-hex, #random-hsl, #random-rgb, #show-lum, #show-palette-data {
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+}
+
+.buttons .btn {
     align-self: center;
     color: var(--bright-text-col);
     background-color: var(--bg-dark-col);
@@ -571,6 +577,11 @@ header {
     border-radius: 6px;
     font-size: 1.2vw;
     margin: 0.2vw;
+    transition: all 0.8s ease-out;
+}
+
+.buttons .btn:hover {
+    border-color: var(--warning-col);
 }
 
 #status {
@@ -580,11 +591,6 @@ header {
     background-color: var(--bg-dark-col);
     user-select: text; 
 }
-
-/*[id^="tbtn"] {
-    background-color: black;
-    border: 1px solid var(--bright-col);
-}*/
 
 #radio-label-0 {
     color: red;
