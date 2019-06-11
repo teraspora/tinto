@@ -73,7 +73,7 @@ palette.forEach(paletteSlot => {
 });
 
 let paletteSize = 0;    // up to 6, inclusive
-const showPaletteData = document.getElementById(`show-palette-data`);
+const showCode = document.getElementById(`show-code`);
 
 function appendPalette(colour) {
     if (paletteSize == 6) return;
@@ -88,7 +88,8 @@ function appendPalette(colour) {
     let conj = showHex && showLum ? ` / ` : NBSP;
     palette[i].innerText = `${showHex ? rgb2Hex(colour) : NBSP}${conj}${showLum ? lum.toFixed(2) : NBSP}`;
     palette[i].style.color = lum > 0.3 ? BLACK : WHITE;
-    if (![`none`, NULL_STR].includes(modal.style.display)) simulateMouseEvent(showPaletteData, `click`);    
+    // If modal is currently being displayed, trigger a refresh.
+    if (![`none`, NULL_STR].includes(modal.style.display)) simulateMouseEvent(showCode, `click`);    
 }
 
 function removeFromPalette(index) {
@@ -97,7 +98,8 @@ function removeFromPalette(index) {
     --paletteSize;
     palette[index].style.backgroundColor = `inherit`;
     palette[index].innerText = NBSP;
-    if (![`none`, NULL_STR].includes(modal.style.display)) simulateMouseEvent(showPaletteData, `click`);
+    // If modal is currently being displayed, trigger a refresh.
+    if (![`none`, NULL_STR].includes(modal.style.display)) simulateMouseEvent(showCode, `click`);
 }
 
 // Modal dialog
@@ -109,7 +111,7 @@ document.addEventListener('click', ev => {
         && ev.target != modal 
         // && ev.target != miniGrid
         && !Array.from(document.getElementById(`controls`).querySelectorAll("*")).includes(ev.target)
-        && ev.target != showPaletteData
+        && ev.target != showCode
         && !ev.target.classList.contains(`hex-colour`) 
         && !ev.target.classList.contains(`cell`)) {
             modal.style.display = `none`;
@@ -118,7 +120,12 @@ document.addEventListener('click', ev => {
 
 let varSlots = document.getElementsByClassName(`css-var`);
 let varArray = document.getElementById(`css-var-array`);
-showPaletteData.addEventListener('click', _ => {
+showCode.addEventListener('click', _ => {
+    // if (![`none`, NULL_STR].includes(modal.style.display)) {
+    //     modal.style.display = `none`;
+    //     this.innerText = `SHOW CODE`;
+    //     return;
+    // } 
     let colours = palette.filter(slot => slot.isActive).map(paletteSlot => paletteSlot.style.backgroundColor);
     // show colours as a block of CSS custom properties ("CSS vars") ready to be pasted into a CSS file
     let varList = getCssVarList(colours);
