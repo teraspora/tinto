@@ -560,15 +560,17 @@ header {
     grid-column: 1/-1;
     overflow-y: scroll;
     text-align: center;
-    padding-top: 2vh;
+    padding-top: 1vh;
 }
 
 #show-hex, #random-hsl, #random-rgb, #show-lum, #show-palette-data {
     align-self: center;
     color: var(--bright-text-col);
     background-color: var(--bg-dark-col);
-    border: 1px solid red;
+    border: 1px solid var(--tblue);
     border-radius: 6px;
+    font-size: 1.2vw;
+    margin: 0.2vw;
 }
 
 #status {
