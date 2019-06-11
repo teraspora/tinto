@@ -427,6 +427,10 @@ Note: some duplication of rules for ease of development and readability;
     #title {
       font-size: 5vw;
     }
+
+    #about {
+      font-size: 4vw;
+    }
 }
 
 @media only screen and (min-width: 1025px) {
@@ -462,6 +466,10 @@ Note: some duplication of rules for ease of development and readability;
     #title {
       font-size: 2vw;
     }
+
+    #about {
+      font-size: 1.5vw;
+    }
 }
 /* =================================================================== */
 
@@ -473,6 +481,11 @@ Note: some duplication of rules for ease of development and readability;
 header {
     align-self: stretch;
     justify-self: stretch;
+}
+
+#about {
+  float: right;
+  color: var(--bright-text-col);
 }
 
 #title {
@@ -550,7 +563,7 @@ header {
     padding-top: 2vh;
 }
 
-#show-hex, #random-hsl, #random-rgb, #show-lum {
+#show-hex, #random-hsl, #random-rgb, #show-lum, #show-palette-data {
     align-self: center;
     color: var(--bright-text-col);
     background-color: var(--bg-dark-col);
@@ -899,7 +912,7 @@ ul.social-icons {
 #modal {
   position: absolute;
   width: 25vw;
-  height: 25vh;
+  height: 60%;
   top: 25%;
   left: 25%;
   text-align: center;
@@ -910,3 +923,10 @@ ul.social-icons {
   color: var(--bright-text-col);
   display: none;
 }
+
+#css-var-array {
+  display: block;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+

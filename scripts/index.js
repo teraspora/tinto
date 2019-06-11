@@ -10,6 +10,8 @@ const BLACK = `#000000`;
 const WHITE = `#ffffff`;
 const NULL_STR = ``;
 const NBSP = `\xa0`;
+const NEWLINE = `\n`;
+const SEMICOLON = `;`;
 
 const [W, H] = [8, 8];
 const hueFactor = 360 / (W * H - 1);
@@ -71,6 +73,7 @@ palette.forEach(paletteSlot => {
 });
 
 let paletteSize = 0;    // up to 6, inclusive
+const showPaletteData = document.getElementById(`show-palette-data`);
 
 function appendPalette(colour) {
     if (paletteSize == 6) return;
@@ -84,7 +87,8 @@ function appendPalette(colour) {
     let lum = getLuminance(colour);
     let conj = showHex && showLum ? ` / ` : NBSP;
     palette[i].innerText = `${showHex ? rgb2Hex(colour) : NBSP}${conj}${showLum ? lum.toFixed(2) : NBSP}`;
-    palette[i].style.color = lum > 0.4 ? BLACK : WHITE;    
+    palette[i].style.color = lum > 0.3 ? BLACK : WHITE;
+    if (![`none`, NULL_STR].includes(modal.style.display)) simulateMouseEvent(showPaletteData, `click`);    
 }
 
 function removeFromPalette(index) {
@@ -93,16 +97,60 @@ function removeFromPalette(index) {
     --paletteSize;
     palette[index].style.backgroundColor = `inherit`;
     palette[index].innerText = NBSP;
+    if (![`none`, NULL_STR].includes(modal.style.display)) simulateMouseEvent(showPaletteData, `click`);
 }
 
 // Modal dialog
 const miniGrid = document.getElementById(`mini-grid`);
 const modal = document.getElementById(`modal`);
 document.addEventListener('click', ev => {
-    if (modal.style.display = `block` && ev.target != modal && ev.target != miniGrid
-        && !ev.target.classList.contains(`hex-colour`) && !ev.target.classList.contains(`cell`)) {
-        modal.style.display = `none`;
+    if (modal.style.display = `block` 
+        && !Array.from(modal.querySelectorAll("*")).includes(ev.target)
+        && ev.target != modal 
+        // && ev.target != miniGrid
+        && !Array.from(document.getElementById(`controls`).querySelectorAll("*")).includes(ev.target)
+        && ev.target != showPaletteData
+        && !ev.target.classList.contains(`hex-colour`) 
+        && !ev.target.classList.contains(`cell`)) {
+            modal.style.display = `none`;
     }
+});
+
+let varSlots = document.getElementsByClassName(`css-var`);
+let varArray = document.getElementById(`css-var-array`);
+showPaletteData.addEventListener('click', _ => {
+    let colours = palette.filter(slot => slot.isActive).map(paletteSlot => paletteSlot.style.backgroundColor);
+    // show colours as a block of CSS custom properties ("CSS vars") ready to be pasted into a CSS file
+    let varList = getCssVarList(colours);
+    let i = 0;
+    // Populate the code slots
+    for (let item of varList) {
+        varSlots[i++].innerText = item;
+    }
+    // Empty out the residue
+    for (let j = i; j < 6; j++) {
+        varSlots[i++].innerText = NULL_STR;
+    }
+    // show as a Javascript list; insert a space after each comma to follow best practice
+    varArray.innerText = (`[\"` + colours.map(col => rgb2Hex(col)) + `\"]`).replace(/,/g, `\", \"`);
+    modal.style.display = `block`;
+});
+
+
+
+document.getElementById("random-hsl").addEventListener('click', _ => {randomMode = `hsl`; reset();});
+document.getElementById("random-rgb").addEventListener('click', _ => {randomMode = `rgb`; reset();});
+
+document.getElementById("show-lum").addEventListener('click', function() {
+    showLum = !showLum;
+    this.innerText = showLum ? "HIDE LUMINANCE" : "SHOW LUMINANCE";
+    for (let paletteSlot of palette) {
+        let lum = getLuminance(paletteSlot.style.backgroundColor);
+        let conj = showHex && showLum ? ` / ` : NBSP;
+        paletteSlot.innerText = paletteSlot.isActive ? 
+            `${showHex ? rgb2Hex(colour) : NULL_STR}${conj}${showLum ? lum.toFixed(2) : NULL_STR}` : NBSP;        
+    }
+    generate();
 });
 
 // Need this class to keep track of which sliders are active
@@ -275,24 +323,10 @@ document.getElementById("show-hex").addEventListener('click', function() {
     for (let paletteSlot of palette) {
         let colour = paletteSlot.style.backgroundColor;
         let lum = getLuminance(colour);
-        paletteSlot.innerText = paletteSlot.isActive  && showLum ? `${lum.toFixed(2)}` : `\xa0`;    // == &nbsp;
+        paletteSlot.innerText = paletteSlot.isActive  && showLum ? `${lum.toFixed(2)}` : NBSP;    // == &nbsp;
         let conj = showHex && showLum ? ` / ` : NBSP;
         paletteSlot.innerText = paletteSlot.isActive ?
             `${showHex ? rgb2Hex(colour) : NULL_STR}${conj}${showLum ? lum.toFixed(2) : NULL_STR}` : NBSP;
-    }
-    generate();
-});
-
-document.getElementById("random-hsl").addEventListener('click', _ => {randomMode = `hsl`; reset();});
-document.getElementById("random-rgb").addEventListener('click', _ => {randomMode = `rgb`; reset();});
-document.getElementById("show-lum").addEventListener('click', function() {
-    showLum = !showLum;
-    this.innerText = showLum ? "HIDE LUMINANCE" : "SHOW LUMINANCE";
-    for (let paletteSlot of palette) {
-        let lum = getLuminance(paletteSlot.style.backgroundColor);
-        let conj = showHex && showLum ? ` / ` : NBSP;
-        paletteSlot.innerText = paletteSlot.isActive ? 
-            `${showHex ? rgb2Hex(colour) : NULL_STR}${conj}${showLum ? lum.toFixed(2) : NULL_STR}` : NBSP;        
     }
     generate();
 });
@@ -409,7 +443,7 @@ function generate() {
         hex = rgb2Hex(colour);
         span.innerText = showLum ? `${getLuminance(colour).toFixed(2)}` : (showHex ? hex : NBSP);
         // span.style.opacity = showHex ? 1 : 0;
-        span.style.color = getLuminance(cell.style.backgroundColor) > 0.4 ? BLACK : WHITE;
+        span.style.color = getLuminance(cell.style.backgroundColor) > 0.3 ? BLACK : WHITE;
     });
 }   // END generate()
 
@@ -419,9 +453,22 @@ function setStatus(text) {
 
 // https://developer.mozilla.org/samples/domref/dispatchEvent.html
 function simulateSliderInput(slider) {
-  let ev = document.createEvent("MouseEvents");
-  let target = rangeSliders[slider]
-  ev.initMouseEvent("input", true, true, window,
-    0, 0, 0, 0, 0, false, false, false, false, 0, null);
-  target.dispatchEvent(ev);  
+    simulateMouseEvent(rangeSliders[slider], `input`);
+}
+
+function getCssVarList(colours) {
+    let prefix = `--col-`;
+    let i = -1;
+    let varList = [];
+    for (let col of colours) {
+        varList[++i] = prefix + i + `: ` + rgb2Hex(col) + SEMICOLON;  
+    }
+    return varList;
+}
+
+function simulateMouseEvent(target, eventType) {
+    let ev = document.createEvent("MouseEvents");
+    ev.initMouseEvent(eventType, true, true, window,
+      0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    target.dispatchEvent(ev);
 }

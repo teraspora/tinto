@@ -23,7 +23,10 @@
 <!-- =========================================================================================== -->
 
         <header>
-            <div id="title">Tinto</div> 
+            <div id="title">
+              <span>Tinto</span>
+              <a href="#" id="about">About Tinto</a>
+            </div> 
         </header>  
 
 <!-- =========================================================================================== -->
@@ -218,6 +221,7 @@
                <button class="btn" id="random-hsl">RANDOM HSL</button>
                <button class="btn" id="random-rgb">RANDOM RGB</button>
                <button class="btn" id="show-lum">SHOW LUMINANCE</button>
+               <button class="btn" id="show-palette-data">SHOW PALETTE DATA</button>
 
                <p id="status">
                   Status: initialised 
@@ -255,7 +259,15 @@
 
     <div id="modal">
       <div id="mini-grid">
-        The mini-grid goes here.
+        <ul>
+          <li><pre><code class=css-var></code></pre></li>
+          <li><pre><code class=css-var></code></pre></li>
+          <li><pre><code class=css-var></code></pre></li>
+          <li><pre><code class=css-var></code></pre></li>
+          <li><pre><code class=css-var></code></pre></li>
+          <li><pre><code class=css-var></code></pre></li>
+        </ul>
+          <div><pre><code id=css-var-array></code></pre></div>
       </div>
     </div>
 
