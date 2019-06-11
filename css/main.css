@@ -930,3 +930,6 @@ ul.social-icons {
   word-wrap: break-word;
 }
 
+a:visited {
+  color: var(--hover-col);
+}
