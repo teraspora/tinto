@@ -12,8 +12,6 @@
     <title>Tinto</title>
     <meta name="description" content="A Javascript app for making colour palettes!">
     <meta name="author" content="John Lynch">
-    <link href="https://fonts.googleapis.com/css?family=Mali|Rubik" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 
@@ -216,29 +214,7 @@
 <!-- =========================================================================================== -->
 <!-- =========================================================================================== -->
 
-            <div id="settings">
-              <section class="buttons">
-                 <button class="btn" id="show-hex">SHOW HEX</button>
-                 <button class="btn" id="random-hsl">RANDOM HSL</button>
-                 <button class="btn" id="random-rgb">RANDOM RGB</button>
-                 <button class="btn" id="show-lum">SHOW LUMINANCE</button>
-                 <button class="btn" id="show-code">SHOW CODE</button>
-              </section>
-               <p id="status">
-                  Welcome to Tinto by <a href="https://www.teraspora.net" target="_blank" rel="noopener">Teraspora</a> 
-               </p>
-               <p>
-                <a href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html" target="_blank" rel="noopener">W3C Guidelines
-                </a>
-                 suggest a contrast ratio of at least 4.5 for regular text and images. 
-                 Contrast ratio is defined as <pre><code>(lum0 + 0.05) / (lum1 + 0.05)</code></pre>, where <pre><code>lum0</code></pre> is the luminance of the lighter colour.
-                  </p>
-                <p style="text-decoration: line-through;">
-                  Select two colours in your palette to show their contrast ratio.
-                </p>
-            </div>
-
-        </section> <!-- END OF CONTROLS SECTION -->
+            </section> <!-- END OF CONTROLS SECTION -->
 <!-- =========================================================================================== -->
 
         <!-- <footer>
@@ -256,6 +232,30 @@
             </div>
         </footer>
  -->
+
+
+    <section id="settings">
+      <section class="buttons">
+         <button class="btn" id="show-hex">SHOW HEX</button>
+         <button class="btn" id="random-hsl">RANDOM HSL</button>
+         <button class="btn" id="random-rgb">RANDOM RGB</button>
+         <button class="btn" id="show-lum">SHOW LUMINANCE</button>
+         <button class="btn" id="show-code">SHOW CODE</button>
+      </section>
+       <p id="status">
+          Welcome to Tinto by <a href="https://www.teraspora.net" target="_blank" rel="noopener">Teraspora</a> 
+       </p>
+       <p>
+        <a href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html" target="_blank" rel="noopener">W3C Guidelines
+        </a>
+         suggest a contrast ratio of at least 4.5 for regular text and images. 
+         Contrast ratio is defined as <pre><code>(lum0 + 0.05) / (lum1 + 0.05)</code></pre>, where <pre><code>lum0</code></pre> is the luminance of the lighter colour.
+          </p>
+        <p style="text-decoration: line-through;">
+          Select two colours in your palette to show their contrast ratio.
+        </p>
+    </section>
+
     </main>
 
     <div id="modal">

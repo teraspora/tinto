@@ -378,6 +378,7 @@ body, html {
     color: var(--bright-col);
     background-color: var(--body-bg-col);
     font-family: sans-serif;
+      
 }
 
 #page-grid {            
@@ -436,7 +437,7 @@ Note: some duplication of rules for ease of development and readability;
 @media only screen and (min-width: 1025px) {
     #page-grid {
         grid-template-columns: 45vw 45vw;
-        grid-template-rows: 1fr 9fr;
+        grid-template-rows: 1fr 4fr 4fr;
     }
 
     header {
@@ -446,7 +447,7 @@ Note: some duplication of rules for ease of development and readability;
     
     #colour-grid {
         grid-column: 1/2;
-        grid-row: 2/3;
+        grid-row: 2/4;
         width:40vw;
         height: 40vw;
     }
@@ -454,13 +455,14 @@ Note: some duplication of rules for ease of development and readability;
     #controls {
         grid-column: 2/-1;
         grid-row: 2/3;
-        width:40vw;
-        height: 40vw;            
+        /*width:40vw;            */
     }
 
-    footer {
-        grid-column: 1/-1;
+    #settings {
+        grid-column: 2/-1;
         grid-row: 3/4;
+        width:40vw;
+        height: auto;            
     }
 
     #title {
@@ -473,7 +475,7 @@ Note: some duplication of rules for ease of development and readability;
 }
 /* =================================================================== */
 
-#colour-grid, #controls {
+#colour-grid, #controls, #settings {
     border: 3px ridge var(--tblue);;
     border-radius: 6px;
 }
@@ -498,12 +500,13 @@ header {
 
 #colour-grid {
     display: grid;
-    grid-gap: 1px;
+    grid-gap: 0px;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
-    align-content: stretch;
-    align-self: stretch;
-    justify-self: center;
+    align-content: center;
+    align-self: top;
+    /*height: fit-content;*/
+    justify-self: right;
     justify-items: stretch;
 }
 
@@ -511,19 +514,20 @@ header {
     align-content: stretch;
     align-self: stretch;
     justify-self: stretch;
-    justify-items: center;
+    justify-items: stretch;
     border: 1px solid black;
 }
 
 #controls {
     display: grid;
     grid-template-columns: min-content 2fr 12fr 10fr 2fr;
-    grid-template-rows: repeat(6, 8fr) 52fr;
-    grid-row-gap: : 10px;
+    grid-template-rows: repeat(6, 1fr);
+    grid-row-gap: 10px;
     grid-column-gap: 10px;
+    justify-self: left;
     align-items: center;
     font-size: 1.4vw;
-    padding: 8px;
+    padding: 1rem;
 }
 #controls > * {
     border: 1px solid var(--bright-col);
@@ -544,6 +548,14 @@ header {
     justify-self: end;
 }
 
+#settings {
+  text-align: center;
+  overflow-y: scroll;
+  height: fit-content;
+  align-self: stretch;
+  justify-self: stretch;
+}
+
 .palette {
   transition: background-color 1s linear;
   user-select: text !important; 
@@ -554,13 +566,6 @@ header {
     color: var(--warning-col);
     border: 1px solid var(--tblue);
     border-radius: 6px;
-}
-
-#settings {
-    grid-column: 1/-1;
-    overflow-y: scroll;
-    text-align: center;
-    padding-top: 1vh;
 }
 
 .buttons {
@@ -610,13 +615,6 @@ header {
 }
 
 /*============================================================*/
-
-footer {
-    align-self: stretch;
-    justify-self: stretch;
-    font-size: 1.4vw;
-    border-top: 1px solid var(--tblue);
-}
 
 /*=========================================
 for mobile: */
@@ -941,4 +939,13 @@ ul.social-icons {
 
 a:visited {
   color: var(--hover-col);
+}
+
+@keyframes start-effect {
+    0% {
+        background-color: var(--tblue);
+    }
+    100% {
+        background-color: var(--body-bg-col);
+    }
 }
