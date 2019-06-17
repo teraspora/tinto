@@ -59,7 +59,8 @@ for (let i = 0; i < 6; i++) {
 // Get refs to the switch-holders
 const switchboxes = document.getElementsByClassName(`switch`);
 
-// Colour palette
+// Colour palette - set up, and supply fns to append colours
+// to and remove colours from it.
 const palette = Array.from(document.getElementsByClassName(`palette`));
 let index = 0;
 palette.forEach(paletteSlot => {
@@ -102,7 +103,8 @@ function removeFromPalette(index) {
     if (![`none`, NULL_STR].includes(modal.style.display)) simulateMouseEvent(showCode, `click`);
 }
 
-// Modal dialog
+// Modal dialog - let user dismiss it by clicking in the body
+// but not on buttons obviously; should be intuitive.
 const codeBlock = document.getElementById(`code-block`);
 const modal = document.getElementById(`modal`);
 document.addEventListener('click', ev => {
@@ -158,14 +160,11 @@ function dragModal() {
     }
 }
 
+// Code to populate code block display of palette as 
+// CSS vars and an array of hex colours as strings.
 let varSlots = document.getElementsByClassName(`css-var`);
 let varArray = document.getElementById(`css-var-array`);
 showCode.addEventListener('click', _ => {
-    // if (![`none`, NULL_STR].includes(modal.style.display)) {
-    //     modal.style.display = `none`;
-    //     this.innerText = `SHOW CODE`;
-    //     return;
-    // } 
     let colours = palette.filter(slot => slot.isActive).map(paletteSlot => paletteSlot.style.backgroundColor);
     // show colours as a block of CSS custom properties ("CSS vars") ready to be pasted into a CSS file
     let varList = getCssVarList(colours);
@@ -185,8 +184,7 @@ showCode.addEventListener('click', _ => {
     modal.style.top = `calc(50% - ${modal.clientHeight / 2}px)`;
 });
 
-
-
+// Activate the 'random' buttons.
 document.getElementById("random-hsl").addEventListener('click', _ => {randomMode = `hsl`; reset();});
 document.getElementById("random-rgb").addEventListener('click', _ => {randomMode = `rgb`; reset();});
 
@@ -382,13 +380,12 @@ document.getElementById("show-hex").addEventListener('click', function() {
 
 // =================================================================================================
 
-
-function reset() {
-    activeSliders.clear();
-    setSliderOpacity();
-    setSwitches();
-    generate();
-}
+// function reset() {
+//     activeSliders.clear();
+//     setSliderOpacity();
+//     setSwitches();
+//     generate();
+// }
 
 function handleClickOnCell() {
     appendPalette(this.style.backgroundColor);
@@ -411,22 +408,24 @@ function initCells(setCellColour) {
     }
 }
 
+// We only want the two most recent, or one if user changed between RGB and HSL groups.
 function setSwitches() {
     for (let i = 0; i < 6; i++) {
         let sliderIsActive = activeSliders.has(i);
         onSwitches[i].checked = sliderIsActive;
         offSwitches[i].checked = !sliderIsActive;
         switchboxes[i].style.opacity = activeSliders.group == Math.trunc(i / 3) ? 1 : 0.3;
-    }
-     
+    }     
 }
 
+// As above, we only want the two most recent, or one if user changed between RGB and HSL groups.
 function setSliderOpacity() {
     for (let i = 0; i < 6; i++) {
         sliderWrappers[i].style.opacity = activeSliders.has(i) ? 1 : 0.3;
     }
 }
 
+// Main function to generate a new colour block and render it.
 function generate() {
     switch (activeSliders.group) {
         case -1:    // If no sliders fixed, generate a grid of random colours
@@ -500,7 +499,6 @@ function setStatus(text) {
     status.innerHTML = `<pre><code>${text}</code></pre>`;
 }
 
-// https://developer.mozilla.org/samples/domref/dispatchEvent.html
 function simulateSliderInput(slider) {
     simulateMouseEvent(rangeSliders[slider], `input`);
 }
@@ -515,6 +513,7 @@ function getCssVarList(colours) {
     return varList;
 }
 
+// https://developer.mozilla.org/samples/domref/dispatchEvent.html
 function simulateMouseEvent(target, eventType) {
     let ev = document.createEvent("MouseEvents");
     ev.initMouseEvent(eventType, true, true, window,
