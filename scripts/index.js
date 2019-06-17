@@ -64,9 +64,14 @@ const switchboxes = document.getElementsByClassName(`switch`);
 // to and remove colours from it.
 const palette = Array.from(document.getElementsByClassName(`palette`));
 let index = 0;
+
+function getRemoveIcon(paletteSlot) {
+    return paletteSlot.nextElementSibling.firstChild;
+}
+
 palette.forEach(paletteSlot => {
     paletteSlot.isActive = false;
-    paletteSlot.nextElementSibling.firstChild.addEventListener(`click`, ev => {    // Target 'Remove' buttons
+    getRemoveIcon(paletteSlot).addEventListener(`click`, ev => {    // Target 'Remove' buttons
         let index = palette.findIndex(slot => slot == ev.target.parentElement.previousElementSibling);
         removeFromPalette(index);
     });
@@ -85,11 +90,12 @@ function appendPalette(colour) {
     if (paletteSize == 6) return;
     let i;
     for (i = 0; i < 6; i++) {
-        if (!palette[i].isActive) break;
+        if (!palette[i].isActive) break;    // Find the first empty slot
     }
     palette[i].isActive = true;
     ++paletteSize;
     palette[i].style.backgroundColor = colour;
+    getRemoveIcon(palette[i]).style.visibility = `visible`;
     let lum = getLuminance(colour);
     let conj = showHex && showLum ? ` / ` : NBSP;
     palette[i].innerText = `${showHex ? rgb2Hex(colour) : NBSP}${conj}${showLum ? lum.toFixed(2) : NBSP}`;
@@ -103,6 +109,7 @@ function removeFromPalette(index) {
     palette[index].isActive = false;
     --paletteSize;
     palette[index].style.backgroundColor = `inherit`;
+    getRemoveIcon(palette[index]).style.visibility = `hidden`;
     palette[index].innerText = NBSP;
     palette[index].style.border = `1px solid var(--bright-col)`;
     if (isSelected(index)) {    // then unselect it
@@ -148,7 +155,10 @@ function selectPaletteColour(index) {
         const rgbString = `rgb(${invertedRgb[0]},${invertedRgb[1]},${invertedRgb[2]})`
         palette[index].style.border = `5px solid ${rgbString}`;
         if (selectedColours.length == 2) {
-            alert(`Contrast ratio = ${contrastRatio(palette[selectedColours[0]].style.backgroundColor, palette[selectedColours[1]].style.backgroundColor)}.`);
+            // codeBlock.innerHTML = ``;
+            // modal.style.display = `block`;
+            alert(`Contrast ratio = ${contrastRatio(palette[selectedColours[0]].style.backgroundColor,
+            palette[selectedColours[1]].style.backgroundColor).toFixed(2)}.`);
         }
     }
 }
@@ -212,8 +222,8 @@ function dragModal() {
 
 // Code to populate code block display of palette as 
 // CSS vars and an array of hex colours as strings.
-let varSlots = document.getElementsByClassName(`css-var`);
-let varArray = document.getElementById(`css-var-array`);
+let varSlots = document.getElementsByClassName(`code-list-item`);
+let varArray = document.getElementById(`code-item`);
 showCode.addEventListener('click', _ => {
     let colours = palette.filter(slot => slot.isActive).map(paletteSlot => paletteSlot.style.backgroundColor);
     // show colours as a block of CSS custom properties ("CSS vars") ready to be pasted into a CSS file

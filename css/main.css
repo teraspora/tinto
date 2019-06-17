@@ -570,6 +570,7 @@ header {
     color: var(--warning-col);
     border: 1px solid var(--tblue);
     border-radius: 6px;
+    visibility: hidden;
 }
 
 .buttons {
@@ -894,7 +895,7 @@ for desktop:                                 */
   list-style: none;
 }
 
-#css-var-array {
+#code-item {
   display: block;
   white-space: pre-wrap;
   word-wrap: break-word;
