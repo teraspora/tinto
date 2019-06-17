@@ -358,6 +358,10 @@ template {
   display: none;
 }
 
+/* END OF NORMALIZE.CSS */
+/* ========================================================================== */
+
+/* Start of own CSS */
 
 * {
         box-sizing: border-box;
@@ -368,13 +372,12 @@ template {
         --body-bg-col: #040408;
         --bright-text-col: #ff9a00;
         --warning-col: #ff4421;
-        border-radius: 0;
         text-decoration: none;
 }
 
 body, html {
-    margin: 1vw;
-    padding: 0;
+    /*margin: 1vw;*/
+    padding: 0.5rem;
     color: var(--bright-col);
     background-color: var(--body-bg-col);
     font-family: sans-serif;
@@ -388,8 +391,7 @@ body, html {
     align-items: stretch;
     border: 2px ridge var(--tblue);
     border-radius: 5px;
-    padding-left: 2vw;
-    padding-bottom: 4vh;
+    padding: 1rem;
 }
 
 /* =================================================================== */
@@ -397,10 +399,10 @@ body, html {
 Note: some duplication of rules for ease of development and readability;
 */
 
-@media only screen and (max-width: 1024px) and (orientation: portrait) {
+@media only screen and (max-width: 1279px) {
     #page-grid {
         grid-template-columns: 90vw;
-        grid-template-rows: 1fr 9fr 9fr;
+        grid-template-rows: 1fr 12fr 8fr 4fr;
     }
 
     header {
@@ -413,6 +415,7 @@ Note: some duplication of rules for ease of development and readability;
         grid-row: 2/3;
         width:80vw;
         height: 80vw;
+        justify-self: center;
     }
     
     #controls {
@@ -420,7 +423,7 @@ Note: some duplication of rules for ease of development and readability;
         grid-row: 3/4;            
     }
 
-    footer {
+    #settings {
         grid-column: 1/-1;
         grid-row: 4/5;
     }
@@ -434,10 +437,10 @@ Note: some duplication of rules for ease of development and readability;
     }
 }
 
-@media only screen and (min-width: 1025px) {
+@media only screen and (min-width: 1280px) {
     #page-grid {
         grid-template-columns: 45vw 45vw;
-        grid-template-rows: 1fr 4fr 4fr;
+        grid-template-rows: 1fr 8fr 4fr;
     }
 
     header {
@@ -448,20 +451,18 @@ Note: some duplication of rules for ease of development and readability;
     #colour-grid {
         grid-column: 1/2;
         grid-row: 2/4;
-        width:40vw;
-        height: 40vw;
+        min-width:40vw;
+        min-height: 40vw;
     }
     
     #controls {
         grid-column: 2/-1;
         grid-row: 2/3;
-        /*width:40vw;            */
     }
 
     #settings {
         grid-column: 2/-1;
         grid-row: 3/4;
-        width:40vw;
         height: auto;            
     }
 
@@ -486,8 +487,8 @@ header {
 }
 
 #about {
-  float: right;
-  color: var(--bright-text-col);
+    float: right;
+    color: var(--bright-text-col);
 }
 
 #title {
@@ -504,9 +505,7 @@ header {
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
     align-content: center;
-    align-self: top;
-    /*height: fit-content;*/
-    justify-self: right;
+    justify-self: center;
     justify-items: stretch;
 }
 
@@ -546,13 +545,18 @@ header {
 
 #controls > .remove {
     justify-self: end;
+
+}
+
+.fa-remove {
+  font-size:2vw;
+  color: var(--warning-col);
 }
 
 #settings {
   text-align: center;
   overflow-y: scroll;
-  height: fit-content;
-  align-self: stretch;
+  /*height: fit-content;*/
   justify-self: stretch;
 }
 
@@ -630,63 +634,13 @@ for desktop:                                 */
 /*======================================
 =======================================*/
 
-/*
-Font Awsome styling for social icons:
-*/
-/* social media links in footer */
-.social-icon {
-    color: #fff;
-}
-ul.social-icons {
-    margin-top: 1vh;
-}
-.social-icons li {
-    vertical-align: top;
-    display: inline;
-    height: 100px;
-}
-.social-icons a {
-    color: #fff;
-    text-decoration: none;
-}
-
-.fa, .icon {
-    display: inline;
-    padding: 2px 2px;
-    background-color: var(--bg-col);
-}
-.fa-twitter:hover {
-    background-color: #00B6F1;
-    -webkit-transition: 0.6s;
-    -o-transition: 0.6s;
-    transition: 0.6s;    
-}
-.fa-github:hover {
-    color: #9840d9;
-    -webkit-transition: 0.6s;
-    -o-transition: 0.6s;
-    transition: 0.6s;    
-}
-.fa-linkedin:hover {
-    background-color: #04669A;
-    -webkit-transition: 0.6s;
-    -o-transition: 0.6s;
-    transition: 0.6s;    
-}
-.icon-st:hover {
-    background-color: #f321b7;
-    -webkit-transition: 0.6s;
-    -o-transition: 0.6s;
-    transition: 0.6s;    
-}
-
 /* 
     Radio button component from a Codepen by Oguzhan Cansever:
     https://codepen.io/oggyindahouse/pen/Bamui
 */
 .switch {
   position: relative;
-  height: 26px;
+  /*height: 26px;*/
   width: 120px;
   margin: 20px auto;
   background: rgba(0, 0, 0, 0.25);
@@ -929,6 +883,10 @@ ul.social-icons {
   background-color: black;
   color: var(--bright-text-col);
   display: none;
+}
+
+#modal ul {
+  list-style: none;
 }
 
 #css-var-array {

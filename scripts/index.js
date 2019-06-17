@@ -103,7 +103,7 @@ function removeFromPalette(index) {
 }
 
 // Modal dialog
-const miniGrid = document.getElementById(`mini-grid`);
+const miniGrid = document.getElementById(`code-block`);
 const modal = document.getElementById(`modal`);
 document.addEventListener('click', ev => {
     if (modal.style.display = `block` 
