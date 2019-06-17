@@ -21,14 +21,15 @@ const slFactor = 100 / (W * H - 1);
 const [minLightness, maxLightness] = [16, 80]
 
 // Values set randomly or by user for R, G, B, H, S, L respectively
-let values = [0, 0, 0, 0, 0, 0];
-let names = [`Red`, `Green`, `Blue`, `Hue`, `Saturation`, `Lightness`];
+const values = [0, 0, 0, 0, 0, 0];
+const names = [`Red`, `Green`, `Blue`, `Hue`, `Saturation`, `Lightness`];
 let showHex = false;    // user button to toggle this
 let showLum = false;    // user button to toggle this
-let showCssNames = true;
+
 // Start somewhere different on the hue circle each time
 let hueOffset = randInt(360);   
 let randomMode = `hsl`;
+const selectedColours = [];
 
 // Get refs to all switches (radio buttons)
 const onSwitches = [];
@@ -71,6 +72,10 @@ palette.forEach(paletteSlot => {
     });
     paletteSlot.style.backgroundColor = BLACK;
     paletteSlot.index = index++;
+    paletteSlot.addEventListener(`click`, ev => {
+        let index = ev.target.index;
+        selectPaletteColour(index);
+    });
 });
 
 let paletteSize = 0;    // up to 6, inclusive
@@ -99,8 +104,53 @@ function removeFromPalette(index) {
     --paletteSize;
     palette[index].style.backgroundColor = `inherit`;
     palette[index].innerText = NBSP;
+    palette[index].style.border = `1px solid var(--bright-col)`;
+    if (isSelected(index)) {    // then unselect it
+        if (index == selectedColours[0]) {
+            selectedColours.shift();
+        }
+        else {
+            selectedColours.pop();
+        }
+        palette[index].style.border = `1px solid var(--bright-col)`;
+    }
+    
     // If modal is currently being displayed, trigger a refresh.
     if (![`none`, NULL_STR].includes(modal.style.display)) simulateMouseEvent(showCode, `click`);
+}
+
+// Code to select palette colour for contrast ratio comparison
+function isSelected(paletteSlotIndex) {
+    return selectedColours.includes(paletteSlotIndex);
+}
+
+function selectPaletteColour(index) {
+    console.log(`********** Colour ${index} clicked!`);
+    if (!palette[index].isActive) return;
+    if (isSelected(index)) {    // then unselect it
+        if (index == selectedColours[0]) {
+            selectedColours.shift();
+        }
+        else {
+            selectedColours.pop();
+        }
+        palette[index].style.border = `1px solid var(--bright-col)`;
+    }
+    else {
+        selectedColours.push(index);
+        if (selectedColours.length == 3) {
+            const indexToRemove = selectedColours.shift();
+            palette[indexToRemove].style.border = `1px solid var(--bright-col)`;
+        }
+        // Highlight it by thickening the border and using the inverse colour for the border.
+        const rgb = rgb2NumericComponents(palette[index].style.backgroundColor);
+        const invertedRgb = rgb.map(component => 255 - component);
+        const rgbString = `rgb(${invertedRgb[0]},${invertedRgb[1]},${invertedRgb[2]})`
+        palette[index].style.border = `5px solid ${rgbString}`;
+        if (selectedColours.length == 2) {
+            alert(`Contrast ratio = ${contrastRatio(palette[selectedColours[0]].style.backgroundColor, palette[selectedColours[1]].style.backgroundColor)}.`);
+        }
+    }
 }
 
 // Modal dialog - let user dismiss it by clicking in the body
@@ -380,19 +430,15 @@ document.getElementById("show-hex").addEventListener('click', function() {
 
 // =================================================================================================
 
-// function reset() {
-//     activeSliders.clear();
-//     setSliderOpacity();
-//     setSwitches();
-//     generate();
-// }
+function reset() {
+    activeSliders.clear();
+    setSliderOpacity();
+    setSwitches();
+    generate();
+}
 
 function handleClickOnCell() {
     appendPalette(this.style.backgroundColor);
-}
-
-function handleClickOnRemove() {
-    removeFromPalette(this.index);
 }
 
 function initCells(setCellColour) {
