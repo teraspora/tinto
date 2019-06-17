@@ -117,19 +117,22 @@ document.addEventListener('click', ev => {
             modal.style.display = `none`;
     }
 });
+
+// The following code to make the modal draggable adapted frpm
+// https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_draggable
 const dragBar = document.getElementById(`modal-drag-bar`);
 dragModal();   // make modal draggable 
 
 function dragModal() {
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    let [x0, y0, x1, y1] = [0, 0, 0, 0];
     dragBar.onmousedown = dragMouseDown; 
 
     function dragMouseDown(ev) {
         ev = ev || window.event;
         ev.preventDefault();
         // get the mouse cursor position at startup:
-        pos3 = ev.clientX;
-        pos4 = ev.clientY;
+        x1 = ev.clientX;
+        y1 = ev.clientY;
         document.onmouseup = closeDragElement;
         // call a function whenever the cursor moves:
         document.onmousemove = elementDrag;
@@ -139,13 +142,13 @@ function dragModal() {
         ev = ev || window.event;
         ev.preventDefault();
         // calculate the new cursor position:
-        pos1 = pos3 - ev.clientX;
-        pos2 = pos4 - ev.clientY;
-        pos3 = ev.clientX;
-        pos4 = ev.clientY;
+        x0 = x1 - ev.clientX;
+        y0 = y1 - ev.clientY;
+        x1 = ev.clientX;
+        y1 = ev.clientY;
         // set the element's new position:
-        modal.style.top = (modal.offsetTop - pos2) + "px";
-        modal.style.left = (modal.offsetLeft - pos1) + "px";
+        modal.style.top = (modal.offsetTop - y0) + "px";
+        modal.style.left = (modal.offsetLeft - x0) + "px";
     }
 
     function closeDragElement() {
