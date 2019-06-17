@@ -64,8 +64,8 @@ const palette = Array.from(document.getElementsByClassName(`palette`));
 let index = 0;
 palette.forEach(paletteSlot => {
     paletteSlot.isActive = false;
-    paletteSlot.nextElementSibling.addEventListener(`click`, ev => {    // Target 'Remove' buttons
-        let index = palette.findIndex(slot => slot == ev.target.previousElementSibling);
+    paletteSlot.nextElementSibling.firstChild.addEventListener(`click`, ev => {    // Target 'Remove' buttons
+        let index = palette.findIndex(slot => slot == ev.target.parentElement.previousElementSibling);
         removeFromPalette(index);
     });
     paletteSlot.style.backgroundColor = BLACK;
@@ -103,13 +103,13 @@ function removeFromPalette(index) {
 }
 
 // Modal dialog
-const miniGrid = document.getElementById(`code-block`);
+const codeBlock = document.getElementById(`code-block`);
 const modal = document.getElementById(`modal`);
 document.addEventListener('click', ev => {
     if (modal.style.display = `block` 
         && !Array.from(modal.querySelectorAll("*")).includes(ev.target)
         && ev.target != modal 
-        // && ev.target != miniGrid
+        // && ev.target != codeBlock
         && !Array.from(document.getElementById(`controls`).querySelectorAll("*")).includes(ev.target)
         && ev.target != showCode
         && !ev.target.classList.contains(`hex-colour`) 
@@ -117,6 +117,43 @@ document.addEventListener('click', ev => {
             modal.style.display = `none`;
     }
 });
+const dragBar = document.getElementById(`modal-drag-bar`);
+dragModal();   // make modal draggable 
+
+function dragModal() {
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    dragBar.onmousedown = dragMouseDown; 
+
+    function dragMouseDown(ev) {
+        ev = ev || window.event;
+        ev.preventDefault();
+        // get the mouse cursor position at startup:
+        pos3 = ev.clientX;
+        pos4 = ev.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(ev) {
+        ev = ev || window.event;
+        ev.preventDefault();
+        // calculate the new cursor position:
+        pos1 = pos3 - ev.clientX;
+        pos2 = pos4 - ev.clientY;
+        pos3 = ev.clientX;
+        pos4 = ev.clientY;
+        // set the element's new position:
+        modal.style.top = (modal.offsetTop - pos2) + "px";
+        modal.style.left = (modal.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+        /* stop moving when mouse button is released:*/
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+}
 
 let varSlots = document.getElementsByClassName(`css-var`);
 let varArray = document.getElementById(`css-var-array`);
@@ -141,6 +178,8 @@ showCode.addEventListener('click', _ => {
     // show as a Javascript list; insert a space after each comma to follow best practice
     varArray.innerText = (`[\"` + colours.map(col => rgb2Hex(col)) + `\"]`).replace(/,/g, `\", \"`);
     modal.style.display = `block`;
+    modal.style.left = `calc(50% - ${modal.clientWidth / 2}px)`;
+    modal.style.top = `calc(50% - ${modal.clientHeight / 2}px)`;
 });
 
 

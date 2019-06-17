@@ -549,7 +549,7 @@ header {
 }
 
 .fa-remove {
-  font-size:2vw;
+  font-size:1.4vw;
   color: var(--warning-col);
 }
 
@@ -874,8 +874,6 @@ for desktop:                                 */
   position: absolute;
   width: 25vw;
   height: 60%;
-  top: 25%;
-  left: 25%;
   text-align: center;
   font-size: 1.6vw;
   border: 3px ridge var(--tblue);
@@ -883,6 +881,13 @@ for desktop:                                 */
   background-color: black;
   color: var(--bright-text-col);
   display: none;
+  z-index: 1024;
+}
+
+#modal-drag-bar {
+    border-bottom: 2px solid var(--tblue);
+    background-color: #000022;
+    user-select: none;
 }
 
 #modal ul {
