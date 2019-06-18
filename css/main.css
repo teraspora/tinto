@@ -376,12 +376,10 @@ template {
 }
 
 body, html {
-    /*margin: 1vw;*/
     padding: 0.5rem;
     color: var(--bright-col);
     background-color: var(--body-bg-col);
     font-family: sans-serif;
-      
 }
 
 #page-grid {            
