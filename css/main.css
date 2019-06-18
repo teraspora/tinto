@@ -600,8 +600,8 @@ header {
 }
 
 #status {
-    border-top: 1px solid var(--tblue);
-    border-bottom: 1px solid var(--tblue);
+    border-top: 1px solid var(--bright-col);
+    border-bottom: 1px solid var(--bright-col);
     color: var(--bright-text-col);
     background-color: var(--bg-dark-col);
     user-select: text; 
@@ -878,7 +878,7 @@ for desktop:                                 */
 #modal {
   position: absolute;
   width: 25vw;
-  height: 60%;
+  height: 25vw;
   text-align: center;
   font-size: 1.6vw;
   border: 3px ridge var(--bright-col);
@@ -915,6 +915,7 @@ for desktop:                                 */
 
 #contrast-details {
   grid-column: 1/-1;
+  padding-top: 1vh;
 }
 
 .col-box {
