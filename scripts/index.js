@@ -95,7 +95,7 @@ function appendPalette(colour) {
     palette[i].isActive = true;
     ++paletteSize;
     palette[i].style.backgroundColor = colour;
-    getRemoveIcon(palette[i]).style.visibility = `visible`;
+    getRemoveIcon(palette[i]).style.opacity = 1;
     let lum = getLuminance(colour);
     let conj = showHex && showLum ? ` / ` : NBSP;
     palette[i].innerText = `${showHex ? rgb2Hex(colour) : NBSP}${conj}${showLum ? lum.toFixed(2) : NBSP}`;
@@ -109,7 +109,7 @@ function removeFromPalette(index) {
     palette[index].isActive = false;
     --paletteSize;
     palette[index].style.backgroundColor = `inherit`;
-    getRemoveIcon(palette[index]).style.visibility = `hidden`;
+    getRemoveIcon(palette[index]).style.opacity = 0;
     palette[index].innerText = NBSP;
     palette[index].style.border = `1px solid var(--bright-col)`;
     if (isSelected(index)) {    // then unselect it
@@ -153,15 +153,35 @@ function selectPaletteColour(index) {
         const rgb = rgb2NumericComponents(palette[index].style.backgroundColor);
         const invertedRgb = rgb.map(component => 255 - component);
         const rgbString = `rgb(${invertedRgb[0]},${invertedRgb[1]},${invertedRgb[2]})`
-        palette[index].style.border = `5px solid ${rgbString}`;
+        palette[index].style.border = `4px ridge ${rgbString}`;
         if (selectedColours.length == 2) {
-            // codeBlock.innerHTML = ``;
-            // modal.style.display = `block`;
-            alert(`Contrast ratio = ${contrastRatio(palette[selectedColours[0]].style.backgroundColor,
-            palette[selectedColours[1]].style.backgroundColor).toFixed(2)}.`);
+            displayContrastInfo();
         }
     }
 }
+const contrastInfo = document.getElementById(`contrast-info`);
+const col0Box = document.getElementById(`contrast-col0`);
+const col1Box = document.getElementById(`contrast-col1`);
+const contrastDetails = document.getElementById(`contrast-details`);
+
+function displayContrastInfo() {
+    dragBar.innerText = `Contrast Info`;
+    const col0 = palette[selectedColours[0]].style.backgroundColor;
+    const col1 = palette[selectedColours[1]].style.backgroundColor;
+    col0Box.style.backgroundColor = col0;
+    col1Box.style.backgroundColor = col1;
+    col0Box.style.color = getLuminance(col0) > 0.3 ? BLACK : WHITE;
+    col1Box.style.color = getLuminance(col1) > 0.3 ? BLACK : WHITE;
+    col0Box.innerText = rgb2Hex(col0);
+    col1Box.innerText = rgb2Hex(col1);
+    contrastDetails.innerText = `Contrast ratio = ${contrastRatio(col0, col1).toFixed(2)}`;
+    modal.replaceChild(contrastInfo, modal.lastElementChild);
+    modal.style.display = `block`;
+    modal.style.left = `calc(50% - ${modal.clientWidth / 2}px)`;
+    modal.style.top = `calc(50% - ${modal.clientHeight / 2}px)`;
+}
+
+
 
 // Modal dialog - let user dismiss it by clicking in the body
 // but not on buttons obviously; should be intuitive.
@@ -239,6 +259,8 @@ showCode.addEventListener('click', _ => {
     }
     // show as a Javascript list; insert a space after each comma to follow best practice
     varArray.innerText = (`[\"` + colours.map(col => rgb2Hex(col)) + `\"]`).replace(/,/g, `\", \"`);
+    dragBar.innerText = `Palette Code`;
+    modal.replaceChild(codeBlock, modal.lastElementChild);
     modal.style.display = `block`;
     modal.style.left = `calc(50% - ${modal.clientWidth / 2}px)`;
     modal.style.top = `calc(50% - ${modal.clientHeight / 2}px)`;

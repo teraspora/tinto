@@ -566,11 +566,15 @@ header {
 }
 
 .remove {
-    background-color: var(--bg-dark-col);
+    background-color: var(--body-bg-col);
     color: var(--warning-col);
-    border: 1px solid var(--tblue);
+    border: 0px !important;
     border-radius: 6px;
-    visibility: hidden;
+}
+
+.remove i {
+    opacity: 0;
+    transition: opacity 0.8s ease-out;  
 }
 
 .buttons {
@@ -877,7 +881,7 @@ for desktop:                                 */
   height: 60%;
   text-align: center;
   font-size: 1.6vw;
-  border: 3px ridge var(--tblue);
+  border: 3px ridge var(--bright-col);
   border-radius: 5px;
   background-color: black;
   color: var(--bright-text-col);
@@ -886,7 +890,7 @@ for desktop:                                 */
 }
 
 #modal-drag-bar {
-    border-bottom: 2px solid var(--tblue);
+    border-bottom: 2px solid var(--bright-col);
     background-color: #000022;
     user-select: none;
 }
@@ -899,6 +903,28 @@ for desktop:                                 */
   display: block;
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+#contrast-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  align-items: stretch;
+  justify-items: stretch;
+}
+
+#contrast-details {
+  grid-column: 1/-1;
+}
+
+.col-box {
+  border: 3px ridge var(--bright-col);
+  padding-top: 1vh;
+}
+
+/* A place to store the 'code-block' and 'contrast-info' elements */
+#div-store {
+  display: none;
 }
 
 a:visited {
