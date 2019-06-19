@@ -18,7 +18,7 @@ const hueFactor = 360 / (W * H - 1);
 const rgbFactor = 256 / (W - 1);  // if W != H will need separate factors
 const rgb1dFactor = 256 / (W * H - 1);
 const slFactor = 100 / (W * H - 1);
-const [minLightness, maxLightness] = [16, 80]
+const [minLightness, maxLightness] = [16, 80];
 
 // Values set randomly or by user for R, G, B, H, S, L respectively
 const values = [0, 0, 0, 0, 0, 0];
@@ -30,6 +30,7 @@ let showLum = false;    // user button to toggle this
 let hueOffset = randInt(360);   
 let randomMode = `hsl`;
 const selectedColours = [];
+let modalPosition = [];
 
 // Get refs to all switches (radio buttons)
 const onSwitches = [];
@@ -132,7 +133,6 @@ function isSelected(paletteSlotIndex) {
 }
 
 function selectPaletteColour(index) {
-    console.log(`********** Colour ${index} clicked!`);
     if (!palette[index].isActive) return;
     if (isSelected(index)) {    // then unselect it
         if (index == selectedColours[0]) {
@@ -177,8 +177,13 @@ function displayContrastInfo() {
     contrastDetails.innerText = `Contrast ratio = ${contrastRatio(col0, col1).toFixed(2)}`;
     modal.replaceChild(contrastInfo, modal.lastElementChild);
     modal.style.display = `block`;
-    modal.style.left = `calc(50% - ${modal.clientWidth / 2}px)`;
-    modal.style.top = `calc(50% - ${modal.clientHeight / 2}px)`;
+    if (modalPosition.length == 0) {
+        modal.style.left = `calc(50% - ${modal.clientWidth / 2}px)`;
+        modal.style.top = `calc(50% - ${modal.clientHeight / 2}px)`;
+    }
+    else {
+        [modal.style.left, modal.style.top] = modalPosition; 
+    }
 }
 
 
@@ -196,6 +201,7 @@ document.addEventListener('click', ev => {
         && ev.target != showCode
         && !ev.target.classList.contains(`hex-colour`) 
         && !ev.target.classList.contains(`cell`)) {
+            modalPosition = [modal.style.left, modal.style.top];
             modal.style.display = `none`;
     }
 });
@@ -229,8 +235,8 @@ function dragModal() {
         x1 = ev.clientX;
         y1 = ev.clientY;
         // set the element's new position:
-        modal.style.top = (modal.offsetTop - y0) + "px";
-        modal.style.left = (modal.offsetLeft - x0) + "px";
+        modalPosition = [(modal.offsetLeft - x0) + "px", (modal.offsetTop - y0) + "px"];
+        [modal.style.left, modal.style.top] = modalPosition;
     }
 
     function closeDragElement() {
@@ -262,8 +268,13 @@ showCode.addEventListener('click', _ => {
     dragBar.innerText = `Palette Code`;
     modal.replaceChild(codeBlock, modal.lastElementChild);
     modal.style.display = `block`;
-    modal.style.left = `calc(50% - ${modal.clientWidth / 2}px)`;
-    modal.style.top = `calc(50% - ${modal.clientHeight / 2}px)`;
+    if (modalPosition.length == 0) {
+        modal.style.left = `calc(50% - ${modal.clientWidth / 2}px)`;
+        modal.style.top = `calc(50% - ${modal.clientHeight / 2}px)`;
+    }
+    else {
+        [modal.style.left, modal.style.top] = modalPosition; 
+    }
 });
 
 // Activate the 'random' buttons.
