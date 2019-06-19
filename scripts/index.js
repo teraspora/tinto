@@ -242,8 +242,8 @@ function dragModal() {
 
 // Code to populate code block display of palette as 
 // CSS vars and an array of hex colours as strings.
-let varSlots = document.getElementsByClassName(`code-list-item`);
-let varArray = document.getElementById(`code-item`);
+const varSlots = codeBlock.getElementsByClassName(`code-list-item`);
+const varArray = document.getElementById(`code-item`);
 showCode.addEventListener('click', _ => {
     let colours = palette.filter(slot => slot.isActive).map(paletteSlot => paletteSlot.style.backgroundColor);
     // show colours as a block of CSS custom properties ("CSS vars") ready to be pasted into a CSS file
