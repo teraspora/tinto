@@ -364,21 +364,21 @@ template {
 /* Start of own CSS */
 
 * {
-        box-sizing: border-box;
-        --bg-dark-col: #010012;
-        --bright-col: #ffc390;
-        --tblue: #0094ff;
-        --hover-col: #ff4b00;
-        --body-bg-col: #040408;
-        --bright-text-col: #ff9a00;
-        --warning-col: #ff4421;
-        text-decoration: none;
+    box-sizing: border-box;
+    --bg-dark-col: #010012;
+    --bright-col: #ffc390;
+    --tblue: #0094ff;
+    --hover-col: #ff4b00;
+    --body-bg-col: #040408;
+    --bright-text-col: #ff9a00;
+    --warning-col: #ff4421;
+    text-decoration: none;
 }
 
 body, html {
     padding: 0.5rem;
     color: var(--bright-col);
-    background-color: var(--body-bg-col);
+    background-color: var(--body-bg-col); 
     font-family: sans-serif;
 }
 
@@ -543,7 +543,6 @@ header {
 
 #controls > .remove {
     justify-self: end;
-
 }
 
 .fa-remove {
@@ -855,18 +854,19 @@ for desktop:                                 */
   letter-spacing: 0.07em;
   margin-top: -1px;
 }
+/* End of slider code */
 
-.hex-colour {
-  /*opacity: 0;*/
+/* ============================================================= */
+
+/*.hex-colour {
   color: #000000;
   font-size: 1.4rem;
   transition: opacity 0.5s ease-in;
+}*/
 
-}
-
-.hex-colour:hover {
+/*.hex-colour:hover {
   opacity: 1;
-}
+}*/
 
 .cell {
   text-align: center;
