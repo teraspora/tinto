@@ -513,6 +513,7 @@ header {
     justify-self: stretch;
     justify-items: stretch;
     border: 1px solid black;
+    overflow: hidden;
 }
 
 #controls {
