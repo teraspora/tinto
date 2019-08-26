@@ -1,7 +1,21 @@
 // Tinto, a tool for creating colour palettes
 // Author: John Lynch
 // Date: June 2019
-// File: tinto/scripts/index.js 
+// File: tinto/scripts/index.js
+
+// First, handle display of "About" data in a fixed modal overlay
+const aboutBox = document.getElementById(`about-box`);
+const aboutHideButton = document.getElementById(`hide-about`);
+const aboutLink = document.getElementById(`about`);
+aboutLink.addEventListener(`click`, _ => {
+    aboutBox.style.display = `block`;
+    aboutBox.scrollTop = 0;
+});
+aboutHideButton.addEventListener(`click`, _ => {
+    aboutBox.style.display = `none`;
+});
+
+// Now follows code for the main app.
 
 // get a random integer in range [0, n]
 let randInt = n => Math.floor(n * Math.random());

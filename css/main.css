@@ -372,6 +372,7 @@ template {
     --body-bg-col: #040408;
     --bright-text-col: #ff9a00;
     --warning-col: #ff4421;
+    --rich-dark-col: #701010;
     text-decoration: none;
 }
 
@@ -938,4 +939,42 @@ a:visited {
     100% {
         background-color: var(--body-bg-col);
     }
+}
+
+#about-box {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #000;
+  background-color: var(--tblue);
+  outline: 2px ridge var(--bright-text-col);
+  border: 4px solid #000;
+  border-radius: 5px;
+  z-index: 128;
+  padding: 2vw;
+  font-size: 1.4vw;
+  max-height: 80vh;
+  overflow-y: scroll;
+}
+
+#hide-about {
+  float: right;
+  align-self: center;
+  color: var(--bright-text-col);
+  background-color: var(--bg-dark-col);
+  border: 1px solid var(--bright-text-col);
+  border-radius: 6px;
+  font-size: 1.4vw;
+  margin: 0.2vw;
+  text-shadow: 0 0 1px white;
+}
+
+#about {
+  cursor: pointer;
+}
+
+#about-box a {
+  color: var(--rich-dark-col);
 }
