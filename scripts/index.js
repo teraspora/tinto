@@ -299,7 +299,8 @@ document.getElementById("show-lum").addEventListener('click', function() {
     showLum = !showLum;
     this.innerText = showLum ? "HIDE LUMINANCE" : "SHOW LUMINANCE";
     for (let paletteSlot of palette) {
-        let lum = getLuminance(paletteSlot.style.backgroundColor);
+        let colour = paletteSlot.style.backgroundColor;
+        let lum = getLuminance(colour);
         let conj = showHex && showLum ? ` / ` : NBSP;
         paletteSlot.innerText = paletteSlot.isActive ? 
             `${showHex ? rgb2Hex(colour) : NULL_STR}${conj}${showLum ? lum.toFixed(2) : NULL_STR}` : NBSP;        
