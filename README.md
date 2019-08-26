@@ -21,11 +21,11 @@ It lets you
 
 It should be fairly intuitive to use Tinto. Play with the buttons and sliders to vary the colours in the grid, and if you find a colour you like, click/tap it to add it to the palette.
 
-Click the red X to remove a colour from the palette.   Newly chosen colours will fill any gaps.
+Click the red *X* to remove a colour from the palette.   Newly chosen colours will fill any gaps.
 
-Clicking "Show Hex" or "Show Luminance" will display these values in the grid and in the palette.   In the grid, only one of these will be shown; luminance takes precedence over hex.
+Clicking "*Show Hex*" or "*Show Luminance*" will display these values in the grid and in the palette.   In the grid, only one of these will be shown; luminance takes precedence over hex.
 
-Any components that are fixed will be shown, with their fixed values, in thge blue bar in the control panel.
+Any components that are fixed will be shown, with their fixed values, in the blue bar in the control panel.
 
 More details about web standards for contrast ratio can be found at https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html
 
