@@ -7,9 +7,12 @@
 const aboutBox = document.getElementById(`about-box`);
 const aboutHideButton = document.getElementById(`hide-about`);
 const aboutLink = document.getElementById(`about`);
-aboutLink.addEventListener(`click`, _ => {
-    aboutBox.style.display = `block`;
-    aboutBox.scrollTop = 0;
+const aboutButton = document.getElementById(`show-about`);
+[aboutLink, aboutButton].forEach(aboutTrigger => {
+    aboutTrigger.addEventListener(`click`, _ => {
+        aboutBox.style.display = `block`;
+        aboutBox.scrollTop = 0;
+    });
 });
 aboutHideButton.addEventListener(`click`, _ => {
     aboutBox.style.display = `none`;
