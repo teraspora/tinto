@@ -4,6 +4,8 @@
 
 Tinto is a tool for web developers and designers, or indeed anyone who has to work with digital colours.
 
+![](media/tinto-ss02.png)
+
 It lets you
 
 - Find precisely the colours you like
