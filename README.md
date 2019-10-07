@@ -1,5 +1,7 @@
 # Tinto - a tool for creating colour palettes
 
+- Deployed to [](https://github.com/teraspora/tinto) 
+
 ## Functionality and Use
 
 Tinto is a tool for web developers and designers, or indeed anyone who has to work with digital colours.
