@@ -1,6 +1,6 @@
 # Tinto - a tool for creating colour palettes
 
-- Deployed to <https://github.com/teraspora/tinto> 
+- Deployed to <https://teraspora.github.io/tinto/> 
 
 ## Functionality and Use
 
